@@ -50,26 +50,28 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
-      body: Center(
-        child: FadeTransition(
-          opacity: _animation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'HypeWear!',
-                style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-                  color: AppColors.accent,
+      body: SafeArea(
+        child: Center(
+          child: FadeTransition(
+            opacity: _animation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'HypeWear!',
+                  style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
+                    color: AppColors.accent,
+                  ),
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Stay fresh, stay bold. Your style journey starts here',
-                style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
-                  color: AppColors.accent.withValues(alpha: 0.5),
+                SizedBox(height: 8),
+                Text(
+                  'Stay fresh, stay bold. Your style journey starts here',
+                  style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
+                    color: AppColors.accent.withValues(alpha: 0.5),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
