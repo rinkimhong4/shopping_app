@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/Modules/Home/Views/home_screen.dart';
+import 'package:shopping_app/Modules/Home/Views/Start_Screen/onboarding_screen.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             transitionDuration: Duration(milliseconds: 500),
-            pageBuilder: (_, __, ___) => HomeScreen(),
+            pageBuilder: (_, __, ___) => OnboardingScreen(),
             transitionsBuilder: (_, animation, __, child) {
               return FadeTransition(opacity: animation, child: child);
             },
@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
                 Text(
                   'Stay fresh, stay bold. Your style journey starts here',
                   style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
-                    color: AppColors.accent.withValues(alpha: 0.5),
+                    color: AppColors.accent.withValues(alpha: 0.6),
                   ),
                 ),
               ],
