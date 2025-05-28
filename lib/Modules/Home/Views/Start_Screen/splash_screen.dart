@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/Modules/Home/Views/Start_Screen/onboarding_screen.dart';
+import 'package:get/get.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,15 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
     Timer(Duration(seconds: 2), () {
       _controller.reverse().then((_) {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            transitionDuration: Duration(milliseconds: 500),
-            pageBuilder: (_, __, ___) => OnboardingScreen(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-          ),
-        );
+        Get.offNamed('/onboarding');
       });
     });
   }
