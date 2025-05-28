@@ -18,6 +18,8 @@ dependencies:
   dots_indicator: ^4.0.1
   cached_network_image: ^3.4.1
   get: ^4.7.2
+  supabase_flutter: ^2.9.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -27,3 +29,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - .env

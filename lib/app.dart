@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/Modules/Home/Views/Start_Screen/splash_screen.dart';
+import 'package:shopping_app/Modules/auth/login/login.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: HomeScreen(),
-      home: SplashScreen(),
+      // home: SplashScreen(),
+      home: LoginScreen(),
     );
   }
 }
