@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/Modules/auth/login/auth_controller.dart';
+import 'package:shopping_app/Modules/auth/auth_controller.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -69,9 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   get _buildBody {
     List<Map<String, dynamic>> socialMediaLogins = [
-      {"icon": Icons.apple, "label": "Apple"},
-      {"icon": Icons.email, "label": "Email"},
-      {"icon": Icons.facebook, "label": "Facebook"},
+      // {"icon": Icons.apple, "label": "Continue with Apple"},
+      {"icon": Icons.email, "label": "Continue with Email"},
+      {"icon": Icons.facebook, "label": "Continue with Facebook"},
     ];
     return SingleChildScrollView(
       controller: _scrollController,
@@ -125,13 +125,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       : AppColors.textSecondary,
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
                                 color: AppColors.textPrimary,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(color: AppColors.primary),
                             ),
                           ),
@@ -161,13 +161,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       : AppColors.textSecondary,
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
                                 color: AppColors.textPrimary,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(color: AppColors.primary),
                             ),
                             suffixIcon: InkWell(
@@ -213,10 +213,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               elevation: 0,
                               backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(32),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              //
+                            },
                             child: Text(
                               'Sign In',
                               style: AppTheme.lightTheme.textTheme.bodyMedium
@@ -260,40 +262,56 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         SizedBox(height: 24),
+
                         // Social Media Login Buttons
                         Column(
                           spacing: 24,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children:
                               socialMediaLogins.map((social) {
-                                return ElevatedButton.icon(
+                                return ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: Size(double.infinity, 54),
-                                    foregroundColor: Colors.black,
-                                    elevation: 1,
+                                    elevation: 0,
                                     backgroundColor: AppColors.background,
+                                    side: const BorderSide(
+                                      color: AppColors.primary,
+                                      width: 1,
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 80,
                                     ),
                                   ),
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    social['icon'],
-                                    color: AppColors.primary,
-                                    size: 30,
-                                  ),
-                                  label: Text(
-                                    social['label'],
-                                    style: AppTheme
-                                        .lightTheme
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(color: AppColors.primary),
+                                  onPressed: () {
+                                    //
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        social['icon'],
+                                        color: AppColors.primary,
+                                        size: 30,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        social['label'],
+                                        style: AppTheme
+                                            .lightTheme
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: AppColors.primary,
+                                            ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               }).toList(),
                         ),
-                        SizedBox(height: 100),
+                        SizedBox(height: 130),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -302,9 +320,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: AppTheme.lightTheme.textTheme.labelSmall
                                   ?.copyWith(color: AppColors.textSecondary),
                             ),
+                            SizedBox(width: 8),
                             TextButton(
                               onPressed: () {
-                                // Navigate to Sign Up Screen
+                                Get.toNamed('/signup');
                               },
                               child: Text(
                                 "Sign Up",
