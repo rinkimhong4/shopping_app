@@ -14,6 +14,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final controller = Get.put(AuthController());
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
+  final confPasswordCtrl = TextEditingController();
   bool pwdVisibility = false;
   final ScrollController _scrollController = ScrollController();
   bool _isScrolled = false;
@@ -33,6 +34,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Color get appBarColor =>
       _isScrolled ? AppColors.primary : AppColors.background;
+  Color get colorArrowBack =>
+      _isScrolled ? AppColors.accent : AppColors.primary;
   @override
   void dispose() {
     _scrollController.dispose();
@@ -47,7 +50,13 @@ class _SignupScreenState extends State<SignupScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: true,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: colorArrowBack),
+            onPressed: () {
+              Get.back();
+            },
+          ),
           title:
               _isScrolled
                   ? Text(
@@ -107,40 +116,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         TextFormField(
                           controller: emailCtrl,
                           decoration: InputDecoration(
-                            labelText: "Username",
-                            hintText: "Enter your username",
-                            hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
-                            labelStyle: TextStyle(
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textPrimary,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.person_outline,
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textSecondary,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                          ),
-                          style: TextStyle(color: AppColors.textPrimary),
-                        ),
-                        SizedBox(height: 30),
-                        TextFormField(
-                          controller: emailCtrl,
-                          decoration: InputDecoration(
                             labelText: "Email",
                             hintText: "Enter your email",
                             hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
@@ -161,7 +136,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -197,27 +174,52 @@ class _SignupScreenState extends State<SignupScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(color: AppColors.primary),
                             ),
-                            suffixIcon: InkWell(
-                              onTap:
-                                  () => setState(
-                                    () => pwdVisibility = !pwdVisibility,
-                                  ),
-                              child: Icon(
-                                pwdVisibility
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color:
-                                    hasFocus
-                                        ? AppColors.primary
-                                        : AppColors.textSecondary,
+                          ),
+                          style: TextStyle(color: AppColors.textPrimary),
+                        ),
+                        SizedBox(height: 30),
+                        // Confirm Password TextField
+                        TextFormField(
+                          controller: confPasswordCtrl,
+                          obscureText: !pwdVisibility,
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            hintText: "Enter your Password",
+                            hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.textSecondary),
+                            labelStyle: TextStyle(
+                              color:
+                                  hasFocus
+                                      ? AppColors.primary
+                                      : AppColors.textPrimary,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.lock_outline,
+                              color:
+                                  hasFocus
+                                      ? AppColors.primary
+                                      : AppColors.textSecondary,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32),
+                              borderSide: BorderSide(
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32),
+                              borderSide: BorderSide(color: AppColors.primary),
                             ),
                           ),
                           style: TextStyle(color: AppColors.textPrimary),
@@ -241,7 +243,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         // Sign In Button
                         SizedBox(
                           width: Get.width,
-                          height: 60,
+                          height: 58,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
@@ -308,8 +310,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     minimumSize: Size(double.infinity, 54),
                                     elevation: 0,
                                     backgroundColor: AppColors.background,
-                                    side: const BorderSide(
-                                      color: AppColors.primary,
+                                    side: BorderSide(
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.6,
+                                      ),
                                       width: 1,
                                     ),
                                     shape: RoundedRectangleBorder(
@@ -327,7 +331,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       Icon(
                                         social['icon'],
                                         color: AppColors.primary,
-                                        size: 30,
+                                        size: 24,
                                       ),
                                       SizedBox(width: 8),
                                       Text(

@@ -127,7 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -163,7 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32),
                               borderSide: BorderSide(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -207,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Sign In Button
                         SizedBox(
                           width: Get.width,
-                          height: 60,
+                          height: 58,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
@@ -262,7 +266,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         SizedBox(height: 24),
-
                         // Social Media Login Buttons
                         Column(
                           spacing: 24,
@@ -274,8 +277,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     minimumSize: Size(double.infinity, 54),
                                     elevation: 0,
                                     backgroundColor: AppColors.background,
-                                    side: const BorderSide(
-                                      color: AppColors.primary,
+                                    side: BorderSide(
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.6,
+                                      ),
                                       width: 1,
                                     ),
                                     shape: RoundedRectangleBorder(
@@ -293,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Icon(
                                         social['icon'],
                                         color: AppColors.primary,
-                                        size: 30,
+                                        size: 24,
                                       ),
                                       SizedBox(width: 8),
                                       Text(

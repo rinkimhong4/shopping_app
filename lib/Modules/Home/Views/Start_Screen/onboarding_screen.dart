@@ -61,7 +61,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             SizedBox(height: 14),
             DotsIndicator(
               dotsCount: onBoardScreenData.length,
-
               position: currentSlideImage.toDouble(),
               decorator: DotsDecorator(
                 activeColor: Color(0xFF22A45D),
@@ -74,20 +73,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             SizedBox(height: 24),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 24),
+            //   child:
+            //       currentSlideImage == onBoardScreenData.length - 1
+            //           ? ElevatedButton(
+            //             onPressed: _goToNextPage,
+            //             style: AppTheme.lightTheme.elevatedButtonTheme.style!,
+            //             child: Text("Get Started".toUpperCase()),
+            //           )
+            //           : ElevatedButton(
+            //             onPressed: _goToNextPage,
+            //             style: AppTheme.lightTheme.elevatedButtonTheme.style!,
+            //             child: Text("Next".toUpperCase()),
+            //           ),
+            // ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
-              child:
-                  currentSlideImage == onBoardScreenData.length - 1
-                      ? ElevatedButton(
-                        onPressed: _goToNextPage,
-                        style: AppTheme.lightTheme.elevatedButtonTheme.style!,
-                        child: Text("Get Started".toUpperCase()),
-                      )
-                      : ElevatedButton(
-                        onPressed: _goToNextPage,
-                        style: AppTheme.lightTheme.elevatedButtonTheme.style!,
-                        child: Text("Next".toUpperCase()),
-                      ),
+              child: ElevatedButton(
+                onPressed: _goToNextPage,
+                style: AppTheme.lightTheme.elevatedButtonTheme.style!.copyWith(
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                ),
+                child: Text(
+                  (currentSlideImage == onBoardScreenData.length - 1
+                          ? "Get Started"
+                          : "Next")
+                      .toUpperCase(),
+                ),
+              ),
             ),
             Spacer(),
           ],
