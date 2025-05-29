@@ -12,33 +12,29 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final controller = Get.put(AuthController());
-  final emailCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
-  final confPasswordCtrl = TextEditingController();
   bool pwdVisibility = false;
-  final ScrollController _scrollController = ScrollController();
-  bool _isScrolled = false;
+  final ScrollController scrollController = ScrollController();
+  bool isScrolled = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      final isScrolledDown = _scrollController.offset > 10;
-      if (isScrolledDown != _isScrolled) {
+    scrollController.addListener(() {
+      final isScrolledDown = scrollController.offset > 10;
+      if (isScrolledDown != isScrolled) {
         setState(() {
-          _isScrolled = isScrolledDown;
+          isScrolled = isScrolledDown;
         });
       }
     });
   }
 
   Color get appBarColor =>
-      _isScrolled ? AppColors.primary : AppColors.background;
-  Color get colorArrowBack =>
-      _isScrolled ? AppColors.accent : AppColors.primary;
+      isScrolled ? AppColors.primary : AppColors.background;
+  Color get colorArrowBack => isScrolled ? AppColors.accent : AppColors.primary;
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -54,11 +50,11 @@ class _SignupScreenState extends State<SignupScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios, color: colorArrowBack),
             onPressed: () {
-              Get.back();
+              Get.toNamed('/login');
             },
           ),
           title:
-              _isScrolled
+              isScrolled
                   ? Text(
                     "Sign Up",
                     style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
@@ -67,7 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   )
                   : null,
           backgroundColor: appBarColor,
-          elevation: _isScrolled ? 5 : 0,
+          elevation: isScrolled ? 5 : 0,
           centerTitle: true,
         ),
         backgroundColor: AppColors.background,
@@ -83,7 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
       {"icon": Icons.facebook, "label": "Continue with Facebook"},
     ];
     return SingleChildScrollView(
-      controller: _scrollController,
+      controller: scrollController,
       child: Container(
         width: Get.width,
         color: AppColors.background,
@@ -101,279 +97,305 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 8),
               Text(
                 "Sign up to start shopping and manage your orders.",
-                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
               SizedBox(height: 58),
-              Focus(
-                child: Builder(
-                  builder: (context) {
-                    final hasFocus = Focus.of(context).hasFocus;
-                    return Column(
-                      children: [
-                        // Email TextField
-                        TextFormField(
-                          controller: emailCtrl,
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            hintText: "Enter your email",
-                            hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
-                            labelStyle: TextStyle(
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textPrimary,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.email_outlined,
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textSecondary,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(
-                                color: AppColors.textPrimary.withValues(
-                                  alpha: 0.6,
-                                ),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                          ),
-                          style: TextStyle(color: AppColors.textPrimary),
-                        ),
-                        SizedBox(height: 30),
-                        // Password TextField
-                        TextFormField(
-                          controller: passwordCtrl,
-                          obscureText: !pwdVisibility,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            hintText: "Enter your Password",
-                            hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
-                            labelStyle: TextStyle(
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textPrimary,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textSecondary,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(
-                                color: AppColors.textPrimary.withValues(
-                                  alpha: 0.6,
-                                ),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                          ),
-                          style: TextStyle(color: AppColors.textPrimary),
-                        ),
-                        SizedBox(height: 30),
-                        // Confirm Password TextField
-                        TextFormField(
-                          controller: confPasswordCtrl,
-                          obscureText: !pwdVisibility,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            hintText: "Enter your Password",
-                            hintStyle: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
-                            labelStyle: TextStyle(
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textPrimary,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color:
-                                  hasFocus
-                                      ? AppColors.primary
-                                      : AppColors.textSecondary,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(
-                                color: AppColors.textPrimary.withValues(
-                                  alpha: 0.6,
-                                ),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                          ),
-                          style: TextStyle(color: AppColors.textPrimary),
-                        ),
-                        SizedBox(height: 8),
-                        // TextButton for Forgot Password
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              // Navigate to Forgot Password Screen
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: AppTheme.lightTheme.textTheme.labelSmall
-                                  ?.copyWith(color: AppColors.primary),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        // Sign In Button
-                        SizedBox(
-                          width: Get.width,
-                          height: 58,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                            ),
-                            onPressed: () {
-                              //
-                            },
-                            child: Text(
-                              'Sign In',
-                              style: AppTheme.lightTheme.textTheme.bodyMedium
-                                  ?.copyWith(color: AppColors.accent),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Container(
-                                height: 1,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                                child: Text(
-                                  "or Login with",
-                                  style: AppTheme
-                                      .lightTheme
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(
-                                        color: AppColors.textSecondary,
-                                      ),
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                height: 1,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 24),
-
-                        // Social Media Login Buttons
-                        Column(
-                          spacing: 24,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children:
-                              socialMediaLogins.map((social) {
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(double.infinity, 54),
-                                    elevation: 0,
-                                    backgroundColor: AppColors.background,
-                                    side: BorderSide(
-                                      color: AppColors.primary.withValues(
-                                        alpha: 0.6,
-                                      ),
-                                      width: 1,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(32),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 80,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    //
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        social['icon'],
-                                        color: AppColors.primary,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        social['label'],
-                                        style: AppTheme
-                                            .lightTheme
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                              color: AppColors.primary,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                        ),
-                        SizedBox(height: 48),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Don't have an account?",
-                              style: AppTheme.lightTheme.textTheme.labelSmall
+              Form(
+                key: controller.formKey,
+                child: Focus(
+                  child: Builder(
+                    builder: (context) {
+                      final hasFocus = Focus.of(context).hasFocus;
+                      return Column(
+                        children: [
+                          // Email TextField
+                          TextFormField(
+                            controller: controller.emailCtrl,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              hintText: "Enter your email",
+                              hintStyle: AppTheme
+                                  .lightTheme
+                                  .textTheme
+                                  .bodyMedium
                                   ?.copyWith(color: AppColors.textSecondary),
+                              labelStyle: TextStyle(
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textPrimary,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textSecondary,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.textPrimary.withValues(
+                                    alpha: 0.6,
+                                  ),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                ),
+                              ),
                             ),
-                            SizedBox(width: 8),
-                            TextButton(
+                            validator: controller.validateEmail,
+                            style: TextStyle(color: AppColors.textPrimary),
+                          ),
+                          SizedBox(height: 30),
+                          // Password TextField
+                          TextFormField(
+                            controller: controller.passwordCtrl,
+                            obscureText: !pwdVisibility,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              hintText: "Password",
+                              hintStyle: AppTheme
+                                  .lightTheme
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.textSecondary),
+                              labelStyle: TextStyle(
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textPrimary,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textSecondary,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.textPrimary.withValues(
+                                    alpha: 0.6,
+                                  ),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                            validator: controller.validatePassword,
+                            style: TextStyle(color: AppColors.textPrimary),
+                          ),
+                          SizedBox(height: 30),
+                          // Confirm Password TextField
+                          TextFormField(
+                            controller: controller.confPasswordCtrl,
+                            obscureText: !pwdVisibility,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              hintText: "Confirm Password",
+                              hintStyle: AppTheme
+                                  .lightTheme
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.textSecondary),
+                              labelStyle: TextStyle(
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textPrimary,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color:
+                                    hasFocus
+                                        ? AppColors.primary
+                                        : AppColors.textSecondary,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.textPrimary.withValues(
+                                    alpha: 0.6,
+                                  ),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                            validator: controller.validateConfirmPassword,
+                            style: TextStyle(color: AppColors.textPrimary),
+                          ),
+                          SizedBox(height: 8),
+                          // TextButton for Forgot Password
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
                               onPressed: () {
-                                Get.toNamed('/login');
+                                // Navigate to Forgot Password Screen
                               },
                               child: Text(
-                                "Sign In",
+                                "Forgot Password?",
                                 style: AppTheme.lightTheme.textTheme.labelSmall
                                     ?.copyWith(color: AppColors.primary),
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
+                          ),
+                          SizedBox(height: 24),
+                          // Sign In Button
+                          SizedBox(
+                            width: Get.width,
+                            height: 58,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                              ),
+                              // onPressed: () {
+                              //   //
+                              // },
+                              onPressed:
+                                  () => controller.submitCommand(context),
+                              child: Text(
+                                'Sign Up',
+                                style: AppTheme.lightTheme.textTheme.bodyMedium
+                                    ?.copyWith(color: AppColors.accent),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 24),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  height: 1,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  child: Text(
+                                    "or Login with",
+                                    style: AppTheme
+                                        .lightTheme
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(
+                                          color: AppColors.textSecondary,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  height: 1,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 24),
+
+                          // Social Media Login Buttons
+                          Column(
+                            spacing: 24,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:
+                                socialMediaLogins.map((social) {
+                                  return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: Size(double.infinity, 54),
+                                      elevation: 0,
+                                      backgroundColor: AppColors.background,
+                                      side: BorderSide(
+                                        color: AppColors.primary.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                        width: 1,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(32),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 80,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      //
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          social['icon'],
+                                          color: AppColors.primary,
+                                          size: 24,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          social['label'],
+                                          style: AppTheme
+                                              .lightTheme
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AppColors.primary,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                          ),
+                          SizedBox(height: 65),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an account?",
+                                style: AppTheme.lightTheme.textTheme.labelSmall
+                                    ?.copyWith(color: AppColors.textSecondary),
+                              ),
+                              SizedBox(width: 8),
+                              TextButton(
+                                onPressed: () {
+                                  Get.toNamed('/login');
+                                },
+                                child: Text(
+                                  "Sign In",
+                                  style: AppTheme
+                                      .lightTheme
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(color: AppColors.primary),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

@@ -12,30 +12,28 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final controller = Get.put(AuthController());
-  final emailCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
   bool pwdVisibility = false;
-  final ScrollController _scrollController = ScrollController();
-  bool _isScrolled = false;
+  final ScrollController scrollController = ScrollController();
+  bool isScrolled = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      final isScrolledDown = _scrollController.offset > 10;
-      if (isScrolledDown != _isScrolled) {
+    scrollController.addListener(() {
+      final isScrolledDown = scrollController.offset > 10;
+      if (isScrolledDown != isScrolled) {
         setState(() {
-          _isScrolled = isScrolledDown;
+          isScrolled = isScrolledDown;
         });
       }
     });
   }
 
   Color get appBarColor =>
-      _isScrolled ? AppColors.primary : AppColors.background;
+      isScrolled ? AppColors.primary : AppColors.background;
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -49,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title:
-              _isScrolled
+              isScrolled
                   ? Text(
                     "Sign In",
                     style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
@@ -58,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                   : null,
           backgroundColor: appBarColor,
-          elevation: _isScrolled ? 5 : 0,
+          elevation: isScrolled ? 5 : 0,
           centerTitle: true,
         ),
         backgroundColor: AppColors.background,
@@ -74,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       {"icon": Icons.facebook, "label": "Continue with Facebook"},
     ];
     return SingleChildScrollView(
-      controller: _scrollController,
+      controller: scrollController,
       child: Container(
         width: Get.width,
         color: AppColors.background,
@@ -84,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Please Sign In",
+                "Welcome Back!",
                 style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
                   color: AppColors.textPrimary,
                 ),
@@ -92,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 8),
               Text(
                 "Login to your account to continue shopping and manage your orders.",
-                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -105,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         // Email TextField
                         TextFormField(
-                          controller: emailCtrl,
+                          controller: controller.emailCtrl,
                           decoration: InputDecoration(
                             labelText: "Email",
                             hintText: "Enter your email",
@@ -142,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 30),
                         // Password TextField
                         TextFormField(
-                          controller: passwordCtrl,
+                          controller: controller.passwordCtrl,
                           obscureText: !pwdVisibility,
                           decoration: InputDecoration(
                             labelText: "Password",
