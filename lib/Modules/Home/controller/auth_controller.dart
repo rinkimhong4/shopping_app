@@ -7,7 +7,6 @@ class AuthController extends GetxController {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final confPasswordCtrl = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   final isLoading = false.obs;
 
   final _supabase = Supabase.instance.client;
@@ -83,23 +82,6 @@ class AuthController extends GetxController {
     return null;
   }
 
-  void submitCommand(BuildContext context) {
-    final form = _formKey.currentState;
-    if (form!.validate()) {
-      form.save();
-      loginCommand(context);
-    }
-  }
-
-  void loginCommand(BuildContext context) {
-    // This is just a demo, so no actual login here.
-    final snackbar = SnackBar(
-      content: Text('Email: ${emailCtrl.text}, password: ${passwordCtrl.text}'),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
-
   @override
   void onClose() {
     emailCtrl.dispose();
@@ -119,17 +101,43 @@ class AuthController extends GetxController {
 
   Future<void> signIn(String email, String password) async {
     try {
+      if (email.isEmpty || password.isEmpty) {
+        throw 'Please fill in all fields';
+      }
+
       isLoading.value = true;
+
       final response = await _supabase.auth.signInWithPassword(
-        email: email,
+        email: email.trim(),
         password: password,
       );
-      if (response.session != null) {
-        isLoading.value = false;
-        Get.toNamed(AppRoute.home);
+
+      if (response.user?.emailConfirmedAt == null) {
+        throw 'Please verify your email first';
       }
+
+      Get.offAllNamed(AppRoute.home);
+    } on AuthException catch (e) {
+      String message = _parseAuthError(e);
+      Get.snackbar('Login Failed', message);
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Login error: $e');
+      Get.snackbar('Error', 'Failed to sign in. Please try again.');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  String _parseAuthError(AuthException e) {
+    switch (e.message) {
+      case 'Invalid login credentials':
+        return 'Incorrect email or password';
+      case 'Email not confirmed':
+        return 'Please verify your email first';
+      case 'Too many requests':
+        return 'Too many attempts. Try again later';
+      default:
+        return e.message;
     }
   }
 

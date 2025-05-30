@@ -12,7 +12,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // final controller = Get.put(AuthController());
   final controller = Get.find<AuthController>();
   final _formKeySignup = GlobalKey<FormState>();
   bool pwdVisibility = false;
@@ -55,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
             onPressed: () {
               controller.emailCtrl.clear();
               controller.passwordCtrl.clear();
-              Get.toNamed(AppRoute.login);
+              Get.offAndToNamed(AppRoute.login);
             },
           ),
           title:
@@ -168,7 +167,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 borderRadius: BorderRadius.circular(32),
                               ),
                             ),
-
                             validator: controller.validateEmail,
                             style: TextStyle(color: AppColors.textPrimary),
                           ),
@@ -374,7 +372,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             ],
                           ),
                           SizedBox(height: 24),
-
                           // Social Media Login Buttons
                           Column(
                             spacing: 24,
@@ -441,7 +438,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   controller.emailCtrl.clear();
                                   controller.passwordCtrl.clear();
                                   controller.confPasswordCtrl.clear();
-                                  Get.toNamed(AppRoute.login);
+                                  Get.offAndToNamed(AppRoute.login);
                                 },
                                 child: Text(
                                   "Sign In",

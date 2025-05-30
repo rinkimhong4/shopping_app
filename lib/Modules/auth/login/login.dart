@@ -159,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderRadius: BorderRadius.circular(32),
                               ),
                             ),
+                            validator: controller.validateEmail,
                             style: TextStyle(color: AppColors.textPrimary),
                           ),
                           SizedBox(height: 30),
@@ -231,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
+                            validator: controller.validatePassword,
                             style: TextStyle(color: AppColors.textPrimary),
                           ),
                           SizedBox(height: 8),
@@ -253,31 +255,62 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             width: Get.width,
                             height: 58,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                overlayColor: AppColors.accent.withValues(
-                                  alpha: 0.1,
+                            child: Obx(
+                              () => ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  overlayColor: AppColors.accent.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  elevation: 0,
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  foregroundColor:
+                                      controller.isLoading.value
+                                          ? AppColors.accent.withValues(
+                                            alpha: 0.5,
+                                          )
+                                          : AppColors.accent,
                                 ),
-                                elevation: 0,
-                                backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                              ),
-                              onPressed: () async {
-                                await controller.signIn(
-                                  controller.emailCtrl.text,
-                                  controller.passwordCtrl.text,
-                                );
-                              },
-                              child: Text(
-                                'Sign In',
-                                style: AppTheme.lightTheme.textTheme.bodyMedium
-                                    ?.copyWith(color: AppColors.accent),
+                                onPressed:
+                                    controller.isLoading.value
+                                        ? null
+                                        : () async {
+                                          if (_formKeyLogin.currentState!
+                                              .validate()) {
+                                            await controller.signIn(
+                                              controller.emailCtrl.text
+                                                  .trim(), // Trim email
+                                              controller.passwordCtrl.text,
+                                            );
+                                          }
+                                        },
+                                child:
+                                    controller.isLoading.value
+                                        ? SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.accent,
+                                          ),
+                                        )
+                                        : Text(
+                                          'Sign In',
+                                          style: AppTheme
+                                              .lightTheme
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AppColors.accent,
+                                              ),
+                                        ),
                               ),
                             ),
                           ),
                           SizedBox(height: 24),
+                          // Divider with "or Login with" text
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -364,6 +397,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 }).toList(),
                           ),
+                          // Divider for Sign Up
                           SizedBox(height: 130),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
