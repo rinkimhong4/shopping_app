@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/Modules/auth/auth_controller.dart';
+import 'package:shopping_app/Modules/Home/controller/auth_controller.dart';
+import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -11,7 +12,9 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final controller = Get.put(AuthController());
+  // final controller = Get.put(AuthController());
+  final controller = Get.find<AuthController>();
+  final _formKeySignup = GlobalKey<FormState>();
   bool pwdVisibility = false;
   final ScrollController scrollController = ScrollController();
   bool isScrolled = false;
@@ -50,7 +53,9 @@ class _SignupScreenState extends State<SignupScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios, color: colorArrowBack),
             onPressed: () {
-              Get.toNamed('/login');
+              controller.emailCtrl.clear();
+              controller.passwordCtrl.clear();
+              Get.toNamed(AppRoute.login);
             },
           ),
           title:
@@ -103,7 +108,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 58),
               Form(
-                key: controller.formKey,
+                key: _formKeySignup,
                 child: Focus(
                   child: Builder(
                     builder: (context) {
@@ -148,7 +153,22 @@ class _SignupScreenState extends State<SignupScreen> {
                                   color: AppColors.primary,
                                 ),
                               ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
                             ),
+
                             validator: controller.validateEmail,
                             style: TextStyle(color: AppColors.textPrimary),
                           ),
@@ -191,6 +211,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                 borderSide: BorderSide(
                                   color: AppColors.primary,
                                 ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
                               ),
                             ),
                             validator: controller.validatePassword,
@@ -236,6 +270,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                   color: AppColors.primary,
                                 ),
                               ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
                             ),
                             validator: controller.validateConfirmPassword,
                             style: TextStyle(color: AppColors.textPrimary),
@@ -267,12 +315,22 @@ class _SignupScreenState extends State<SignupScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32),
                                 ),
+                                overlayColor: AppColors.accent.withValues(
+                                  alpha: 0.1,
+                                ),
                               ),
-                              // onPressed: () {
-                              //   //
-                              // },
-                              onPressed:
-                                  () => controller.submitCommand(context),
+                              onPressed: () async {
+                                if (_formKeySignup.currentState!.validate()) {
+                                  await controller.signUp(
+                                    controller.emailCtrl.text.trim(),
+                                    controller.passwordCtrl.text.trim(),
+                                  );
+                                } else {
+                                  debugPrint("Form is not valid");
+                                }
+                              },
+                              // onPressed:
+                              //     () => controller.submitCommand(context),
                               child: Text(
                                 'Sign Up',
                                 style: AppTheme.lightTheme.textTheme.bodyMedium
@@ -325,6 +383,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 socialMediaLogins.map((social) {
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
+                                      overlayColor: AppColors.primary,
                                       minimumSize: Size(double.infinity, 54),
                                       elevation: 0,
                                       backgroundColor: AppColors.background,
@@ -372,14 +431,17 @@ class _SignupScreenState extends State<SignupScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Don't have an account?",
+                                "Already have an account?",
                                 style: AppTheme.lightTheme.textTheme.labelSmall
                                     ?.copyWith(color: AppColors.textSecondary),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: 4),
                               TextButton(
                                 onPressed: () {
-                                  Get.toNamed('/login');
+                                  controller.emailCtrl.clear();
+                                  controller.passwordCtrl.clear();
+                                  controller.confPasswordCtrl.clear();
+                                  Get.toNamed(AppRoute.login);
                                 },
                                 child: Text(
                                   "Sign In",

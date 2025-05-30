@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
     Timer(Duration(seconds: 2), () {
       _controller.reverse().then((_) {
-        Get.offNamed('/onboarding');
+        Get.offNamed(AppRoute.onboarding);
       });
     });
   }

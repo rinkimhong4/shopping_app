@@ -2,6 +2,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/Modules/Home/Views/Start_Screen/onboard_content.dart';
+import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           duration: Duration(milliseconds: 100),
           curve: Curves.easeInOut,
         )
-        : Get.offNamed('/login');
+        : Get.offNamed(AppRoute.login);
   }
 
   @override
