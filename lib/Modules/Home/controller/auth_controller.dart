@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
+import 'package:shopping_app/core/service/local_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController extends GetxController {
@@ -13,26 +14,57 @@ class AuthController extends GetxController {
 
   Future<void> signUp(String email, String password) async {
     try {
-      //
       isLoading.value = true;
+
       final response = await _supabase.auth.signUp(
-        email: email,
-        password: password,
+        email: email.trim().toLowerCase(),
+        password: password.trim(),
       );
+
       if (response.user != null) {
         isLoading.value = false;
         Get.toNamed(AppRoute.home);
-      }
-    } catch (e) {
-      if (e is AuthException) {
-        Get.snackbar('Error', e.message);
-        // emailCtrl.clear();
-        passwordCtrl.clear();
-        confPasswordCtrl.clear();
       } else {
-        Get.snackbar('Error', 'An unexpected error occurred');
+        isLoading.value = false;
+        Get.snackbar(
+          'Signup Failed',
+          'Something went wrong. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
-      // debugPrint(e.toString());
+    } on AuthException catch (e) {
+      isLoading.value = false;
+
+      // Optional: custom message for known cases
+      String message =
+          e.message.contains("already registered")
+              ? "This email is already in use."
+              : e.message;
+
+      Get.snackbar(
+        'Signup Error',
+        message,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+
+      emailCtrl.clear();
+      passwordCtrl.clear();
+      confPasswordCtrl.clear();
+    } catch (e) {
+      isLoading.value = false;
+
+      debugPrint('Unexpected error: $e');
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -93,6 +125,7 @@ class AuthController extends GetxController {
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
+      await LocalStorageService.instance.remove('user_id');
       Get.offAllNamed(AppRoute.login);
     } catch (e) {
       Get.snackbar('Error', 'Failed to sign out: ${e.toString()}');
@@ -101,43 +134,50 @@ class AuthController extends GetxController {
 
   Future<void> signIn(String email, String password) async {
     try {
-      if (email.isEmpty || password.isEmpty) {
-        throw 'Please fill in all fields';
-      }
-
       isLoading.value = true;
 
       final response = await _supabase.auth.signInWithPassword(
-        email: email.trim(),
-        password: password,
+        email: email.trim().toLowerCase(),
+        password: password.trim(),
       );
 
-      if (response.user?.emailConfirmedAt == null) {
-        throw 'Please verify your email first';
+      if (response.session != null) {
+        await LocalStorageService.instance.setString(
+          'user_id',
+          response.user?.id ?? '',
+        );
+
+        isLoading.value = false;
+        Get.offAndToNamed(AppRoute.home);
+      } else {
+        isLoading.value = false;
+        Get.snackbar(
+          'Login Failed',
+          'Invalid email or password.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
-
-      Get.offAllNamed(AppRoute.home);
     } on AuthException catch (e) {
-      String message = _parseAuthError(e);
-      Get.snackbar('Login Failed', message);
-    } catch (e) {
-      debugPrint('Login error: $e');
-      Get.snackbar('Error', 'Failed to sign in. Please try again.');
-    } finally {
       isLoading.value = false;
-    }
-  }
-
-  String _parseAuthError(AuthException e) {
-    switch (e.message) {
-      case 'Invalid login credentials':
-        return 'Incorrect email or password';
-      case 'Email not confirmed':
-        return 'Please verify your email first';
-      case 'Too many requests':
-        return 'Too many attempts. Try again later';
-      default:
-        return e.message;
+      Get.snackbar(
+        'Login Error',
+        e.message,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      isLoading.value = false;
+      debugPrint('Unexpected error: $e');
+      Get.snackbar(
+        'Error',
+        'Something went wrong. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 

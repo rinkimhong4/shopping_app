@@ -273,19 +273,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                           )
                                           : AppColors.accent,
                                 ),
-                                onPressed:
-                                    controller.isLoading.value
-                                        ? null
-                                        : () async {
-                                          if (_formKeyLogin.currentState!
-                                              .validate()) {
-                                            await controller.signIn(
-                                              controller.emailCtrl.text
-                                                  .trim(), // Trim email
-                                              controller.passwordCtrl.text,
-                                            );
-                                          }
-                                        },
+                                onPressed: () async {
+                                  if (_formKeyLogin.currentState!.validate()) {
+                                    await controller.signIn(
+                                      controller.emailCtrl.text.trim(),
+                                      controller.passwordCtrl.text,
+                                    );
+                                  }
+                                },
                                 child:
                                     controller.isLoading.value
                                         ? SizedBox(

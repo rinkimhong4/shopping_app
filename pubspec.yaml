@@ -21,6 +21,7 @@ dependencies:
   supabase_flutter: ^2.9.0
   flutter_dotenv: ^5.2.1
   email_validator: ^2.1.17
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
