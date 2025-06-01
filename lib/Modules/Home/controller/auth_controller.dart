@@ -23,7 +23,7 @@ class AuthController extends GetxController {
 
       if (response.user != null) {
         isLoading.value = false;
-        Get.toNamed(AppRoute.home);
+        Get.offAndToNamed(AppRoute.home);
       } else {
         isLoading.value = false;
         Get.snackbar(
@@ -36,7 +36,6 @@ class AuthController extends GetxController {
       }
     } on AuthException catch (e) {
       isLoading.value = false;
-
       // Optional: custom message for known cases
       String message =
           e.message.contains("already registered")
