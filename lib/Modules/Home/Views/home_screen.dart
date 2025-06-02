@@ -4,7 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
+import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:shopping_app/widgets/button_navigation_bar.dart';
 import 'package:shopping_app/widgets/timer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,6 +35,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = Get.put(HomeController());
+  int _selectedIndex = 0;
+
+  void _onNavItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        Get.toNamed(AppRoute.searchScreen);
+        break;
+      case 2:
+        Get.toNamed(AppRoute.bagScreen);
+        break;
+      case 3:
+        Get.toNamed(AppRoute.profile);
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -49,18 +71,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: AppColors.background, body: _buildBody());
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: _buildBody(),
+      bottomNavigationBar: ButtonNavigationWidget(
+        selectedIndex: _selectedIndex,
+        onTap: _onNavItemTapped,
+      ),
+    );
   }
 
   Widget _buildBody() {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
+          automaticallyImplyLeading: false,
           expandedHeight: 40,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
               'HypeWear!',
-              style: AppTheme.lightTheme.textTheme.titleMedium,
+              style: AppTheme.lightTheme.textTheme.titleLarge,
             ),
             titlePadding: EdgeInsets.only(left: 24, bottom: 18),
             centerTitle: false,
@@ -109,14 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
       () => Column(
         children: [
           SizedBox(
-            height: 250,
+            height: 230,
             width: double.infinity,
             child: PageView.builder(
-              controller:
-                  _controller.pageController, // Use controller's PageController
+              controller: _controller.pageController,
               itemCount: widget.color.length,
               onPageChanged: (index) {
-                _controller.updateCurrentPage(index); // Update current page
+                _controller.updateCurrentPage(index);
               },
               itemBuilder: (context, index) {
                 return Container(
@@ -200,30 +229,38 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 24),
         SizedBox(
-          height: 230,
+          height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(left: 14),
             itemCount: widget.color.length,
             itemBuilder: (context, index) {
               return Container(
-                width: 200,
+                width: 160,
                 margin: const EdgeInsets.only(right: 8),
                 child: Stack(
                   children: [
                     Container(
                       decoration: BoxDecoration(
                         color: widget.color[index],
+                        // image: DecorationImage(
+                        //   image: NetworkImage(
+                        //     'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/6f8ced50-ee67-4b21-a330-cebc08c96358/AIR+MAX+DN8.png',
+                        //   ),
+                        //   fit: BoxFit.cover,
+                        // ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 140),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            widget.titleListSlider[index],
-                            style: AppTheme.lightTheme.textTheme.bodyLarge,
-                            textAlign: TextAlign.center,
+                          Expanded(
+                            child: Text(
+                              widget.titleListSlider[index],
+                              style: AppTheme.lightTheme.textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
@@ -307,14 +344,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  SliverPadding get _popularProductsGrid {
+  get _popularProductsGrid {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
           childAspectRatio: 0.85,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {

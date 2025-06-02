@@ -20,7 +20,7 @@ dependencies:
   get: ^4.7.2
   supabase_flutter: ^2.9.0
   flutter_dotenv: ^5.2.1
-  email_validator: ^2.1.17
+  # email_validator: ^2.1.17
   shared_preferences: ^2.5.3
   carousel_slider: ^5.0.0
   shimmer: ^3.0.0
