@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:shopping_app/Modules/Home/Views/3d.dart/t_shirt_widget.dart';
+import 'package:shopping_app/Modules/Home/Views/search/custom_search_screen.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
@@ -98,7 +99,9 @@ class _SearchScreenState extends State<SearchScreen> {
           backgroundColor: Colors.transparent,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
               icon: SvgPicture.asset(
                 'assets/icons/search-outline.svg',
                 width: 28,
@@ -317,12 +320,12 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget get _searchBanner {
+  get _searchBanner {
     return Padding(
       padding: const EdgeInsets.only(top: 30, left: 14, right: 14),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.2),
+          color: AppColors.error.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Padding(

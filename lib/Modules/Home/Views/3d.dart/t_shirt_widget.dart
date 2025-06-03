@@ -27,7 +27,7 @@ class _TShirt3DWidgetState extends State<TShirt3DWidget> {
         controller: _controller,
         progressBarColor: Colors.transparent,
         onError: (error) {
-          print("3D Viewer Error: $error");
+          // print("3D Viewer Error: $error");
           setState(() => _hasError = true);
         },
         onLoad: (_) {
