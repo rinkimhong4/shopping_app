@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:shopping_app/Modules/Home/Views/3d.dart/t_shirt_widget.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
@@ -321,7 +322,7 @@ class _SearchScreenState extends State<SearchScreen> {
       padding: const EdgeInsets.only(top: 30, left: 14, right: 14),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.error.withValues(alpha: 0.2),
+          color: AppColors.error.withOpacity(0.2),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Padding(
@@ -333,7 +334,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -355,7 +355,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                         maxLines: 2,
                       ),
-                      SizedBox(height: 1),
+                      const SizedBox(height: 1),
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
@@ -376,14 +376,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
               ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxHeight: 150,
-                  minHeight: 100,
-                ),
-                child: Image.network(
-                  'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/6f8ced50-ee67-4b21-a330-cebc08c96358/AIR+MAX+DN.png',
-                  fit: BoxFit.contain,
+
+              SizedBox(
+                width: 170,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: 170, minHeight: 170),
+                  child: _3DTShirt,
                 ),
               ),
             ],
@@ -392,4 +390,6 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+
+  Widget get _3DTShirt => const TShirt3DWidget();
 }

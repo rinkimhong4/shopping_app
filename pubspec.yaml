@@ -25,6 +25,8 @@ dependencies:
   carousel_slider: ^5.0.0
   shimmer: ^3.0.0
   like_button: ^2.1.0
+  flutter_3d_controller: ^2.2.0
+  flutter_cache_manager: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -38,3 +40,4 @@ flutter:
   assets:
     - .env
     - assets/icons/
+    - assets/3D/
