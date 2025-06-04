@@ -5,17 +5,11 @@ import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
 
-class BagScreen extends StatefulWidget {
+class BagScreen extends StatelessWidget {
   const BagScreen({super.key});
 
-  @override
-  State<BagScreen> createState() => _BagScreenState();
-}
-
-class _BagScreenState extends State<BagScreen> {
-  final int _selectedIndex = 2; // Bag tab index
-
-  // Handle navigation when a bottom navigation item is tapped
+  final int _selectedIndex = 2;
+  // Bag tab index
   void _onNavItemTapped(int index) {
     if (index != _selectedIndex) {
       switch (index) {

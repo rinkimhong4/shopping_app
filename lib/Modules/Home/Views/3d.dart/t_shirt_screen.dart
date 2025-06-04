@@ -25,3 +25,12 @@
 //     );
 //   }
 // }
+// // =====
+// SizedBox(
+//                 width: 170,
+//                 child: ConstrainedBox(
+//                   constraints: BoxConstraints(maxHeight: 170, minHeight: 170),
+//                   child: _3DTShirt,
+//                 ),
+//               ),
+//   Widget get _3DTShirt => const TShirt3DWidget();

@@ -16,5 +16,6 @@ Future<void> main() async {
   await Supabase.initialize(url: url!, anonKey: anonKey!);
 
   Get.put(AuthController());
+  Get.lazyPut(() => SearchController());
   runApp(MyApp());
 }

@@ -1,26 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/Modules/items/search_items.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
-
-// Sample DetailScreen to navigate to
-class DetailScreen extends StatelessWidget {
-  final String item;
-
-  const DetailScreen({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('$item Details'),
-        backgroundColor: AppColors.accent,
-      ),
-      body: Center(
-        child: Text('Details for $item', style: const TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
 
 class CustomSearchDelegate extends SearchDelegate<String> {
   final List<String> _searchItems = [
@@ -35,7 +16,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     'Sweater',
     'Blazer',
   ];
-  final List _imageSeach = [
+  final List _imageSearch = [
     'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/ec69f2c4-b6ca-4fde-a314-0acbd0cc2664/M+NRG+NOCTA+CS+TEE+SS.png',
     'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/ec69f2c4-b6ca-4fde-a314-0acbd0cc2664/M+NRG+NOCTA+CS+TEE+SS.png',
     'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/ec69f2c4-b6ca-4fde-a314-0acbd0cc2664/M+NRG+NOCTA+CS+TEE+SS.png',
@@ -104,23 +85,38 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                   child: Container(
                     height: 120,
                     width: 120,
-                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          index < _imageSeach.length
-                              ? _imageSeach[index]
-                              : 'https://via.placeholder.com/150',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Center(
-                      child: Text(
-                        _searchItems[index % _searchItems.length],
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                index < _imageSearch.length
+                                    ? _imageSearch[index]
+                                    : 'https://via.placeholder.com/150',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: Text(
+                              _searchItems[index % _searchItems.length],
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -146,7 +142,6 @@ class CustomSearchDelegate extends SearchDelegate<String> {
               (context, index) => ListTile(
                 title: Text(suggestions[index]),
                 onTap: () {
-                  // Navigate to DetailScreen
                   Navigator.push(
                     context,
                     MaterialPageRoute(

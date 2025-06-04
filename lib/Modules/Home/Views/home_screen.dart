@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
-import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
 import 'package:shopping_app/widgets/timer.dart';
+import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   final List<Color> color = [
     Colors.amber,
     Colors.red,
@@ -28,49 +28,34 @@ class HomeScreen extends StatefulWidget {
   ];
 
   HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final _controller = Get.put(HomeController());
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
 
   void _onNavItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
     switch (index) {
       case 0:
         break;
       case 1:
-        Get.toNamed(AppRoute.searchScreen);
+        Get.offAndToNamed(AppRoute.searchScreen);
         break;
       case 2:
-        Get.toNamed(AppRoute.bagScreen);
+        Get.offAndToNamed(AppRoute.bagScreen);
         break;
       case 3:
-        Get.toNamed(AppRoute.profile);
+        Get.offAndToNamed(AppRoute.profile);
         break;
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.startAutoSlide(widget.color.length);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Initialize HomeController
+    final controller = Get.put(HomeController());
+
+    // Start auto-slide after widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.startAutoSlide(color.length);
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: _buildBody(),
@@ -135,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _bannerSlider {
+    final controller = Get.find<HomeController>();
     return Obx(
       () => Column(
         children: [
@@ -142,14 +128,14 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 230,
             width: double.infinity,
             child: PageView.builder(
-              controller: _controller.pageController,
-              itemCount: widget.color.length,
+              controller: controller.pageController,
+              itemCount: color.length,
               onPageChanged: (index) {
-                _controller.updateCurrentPage(index);
+                controller.updateCurrentPage(index);
               },
               itemBuilder: (context, index) {
                 return Container(
-                  decoration: BoxDecoration(color: widget.color[index]),
+                  decoration: BoxDecoration(color: color[index]),
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 110),
@@ -158,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            widget.titleListSlider[index],
+                            titleListSlider[index],
                             style: const TextStyle(
                               fontSize: 28,
                               color: Colors.white,
@@ -197,12 +183,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 12),
           DotsIndicator(
-            dotsCount: widget.color.length,
-            position: _controller.currentPage.toDouble(),
+            dotsCount: color.length,
+            position: controller.currentPage.toDouble(),
             decorator: DotsDecorator(
-              activeColor: widget.color[_controller.currentPage.round()],
               size: const Size.square(5),
               activeSize: const Size(10, 8),
+              activeColor: color[controller.currentPage.round()],
             ),
           ),
         ],
@@ -233,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 14),
-            itemCount: widget.color.length,
+            itemCount: color.length,
             itemBuilder: (context, index) {
               return Container(
                 width: 160,
@@ -242,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: widget.color[index],
+                        color: color[index],
                         // image: DecorationImage(
                         //   image: NetworkImage(
                         //     'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/6f8ced50-ee67-4b21-a330-cebc08c96358/AIR+MAX+DN8.png',
@@ -257,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.titleListSlider[index],
+                              titleListSlider[index],
                               style: AppTheme.lightTheme.textTheme.bodyLarge,
                               textAlign: TextAlign.center,
                             ),
@@ -357,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
         delegate: SliverChildBuilderDelegate((context, index) {
           return Container(
             decoration: BoxDecoration(
-              color: widget.color[index],
+              color: color[index],
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
@@ -366,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      widget.titleListSlider[index],
+                      titleListSlider[index],
                       style: AppTheme.lightTheme.textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),
@@ -424,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           );
-        }, childCount: widget.color.length),
+        }),
       ),
     );
   }
