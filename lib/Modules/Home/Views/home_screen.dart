@@ -1,33 +1,20 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:shopping_app/core/data/home_data.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
 import 'package:shopping_app/widgets/timer.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 
-class HomeScreen extends StatelessWidget {
-  final List<Color> color = [
-    Colors.amber,
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.purple,
-    Colors.orange,
-  ];
-  final List<String> titleListSlider = [
-    'Summer Collection',
-    'Winter Sale',
-    'New Arrivals',
-    'Exclusive Offers',
-    'Trending Now',
-    'Limited Edition',
-  ];
-
-  HomeScreen({super.key});
+class HomeScreen extends GetView<HomeController> {
+  const HomeScreen({super.key});
   final int _selectedIndex = 0;
 
   void _onNavItemTapped(int index) {
@@ -48,12 +35,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize HomeController
     final controller = Get.put(HomeController());
-
-    // Start auto-slide after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.startAutoSlide(color.length);
+      controller.startAutoSlide(HomeDataSlider.bannerItems.length);
     });
 
     return Scaffold(
@@ -79,7 +63,13 @@ class HomeScreen extends StatelessWidget {
             ),
             titlePadding: EdgeInsets.only(left: 24, bottom: 18),
             centerTitle: false,
-            background: Container(color: AppColors.accent),
+            background: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                height: 78,
+                decoration: BoxDecoration(color: Colors.white70),
+              ),
+            ),
           ),
           floating: false,
           pinned: true,
@@ -118,9 +108,11 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+  /*******  f2768fcf-3ad6-4583-b3ad-c67bdfa8e223  *******/
 
-  Widget get _bannerSlider {
+  get _bannerSlider {
     final controller = Get.find<HomeController>();
+    final bannerItems = HomeDataSlider.bannerItems;
     return Obx(
       () => Column(
         children: [
@@ -129,13 +121,20 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             child: PageView.builder(
               controller: controller.pageController,
-              itemCount: color.length,
+              itemCount: bannerItems.length,
               onPageChanged: (index) {
                 controller.updateCurrentPage(index);
               },
               itemBuilder: (context, index) {
                 return Container(
-                  decoration: BoxDecoration(color: color[index]),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        bannerItems[index]['image']!,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 110),
@@ -144,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            titleListSlider[index],
+                            bannerItems[index]['title']!,
                             style: const TextStyle(
                               fontSize: 28,
                               color: Colors.white,
@@ -183,12 +182,11 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           DotsIndicator(
-            dotsCount: color.length,
+            dotsCount: bannerItems.length,
             position: controller.currentPage.toDouble(),
             decorator: DotsDecorator(
               size: const Size.square(5),
               activeSize: const Size(10, 8),
-              activeColor: color[controller.currentPage.round()],
             ),
           ),
         ],
@@ -197,124 +195,168 @@ class HomeScreen extends StatelessWidget {
   }
 
   get _buildHorizontalSlide {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8, left: 14, right: 14),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Selling Fast 🔥',
-                style: AppTheme.lightTheme.textTheme.titleMedium,
-              ),
-              CustomTimePicker(),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 14),
-            itemCount: color.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: 160,
-                margin: const EdgeInsets.only(right: 8),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: color[index],
-                        // image: DecorationImage(
-                        //   image: NetworkImage(
-                        //     'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/6f8ced50-ee67-4b21-a330-cebc08c96358/AIR+MAX+DN8.png',
-                        //   ),
-                        //   fit: BoxFit.cover,
-                        // ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.only(top: 140),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              titleListSlider[index],
-                              style: AppTheme.lightTheme.textTheme.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
+    final controller = Get.find<HomeController>();
+    return Obx(
+      () =>
+          controller.isLoading.value
+              ? Center(child: CircularProgressIndicator.adaptive())
+              : controller.tShirtModels.isEmpty
+              ? Center(child: Text('No found'))
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, left: 14, right: 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              top: 8,
-                              bottom: 8,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "\$45.00",
-                                  style: AppTheme
-                                      .lightTheme
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        decoration: TextDecoration.lineThrough,
+                          child: Text(
+                            'Selling Fast 🔥',
+                            style: AppTheme.lightTheme.textTheme.titleMedium,
+                          ),
+                        ),
+                        const CustomTimePicker(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 14),
+                      itemCount: controller.tShirtModels.length,
+                      itemBuilder: (context, index) {
+                        final tShirt = controller.tShirtModels[index];
+                        return Container(
+                          width: 160,
+                          margin: const EdgeInsets.only(right: 14),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                      tShirt.image ?? '',
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.only(top: 140),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+
+                                        child: Text(
+                                          tShirt.title ?? 'No Title',
+                                          style:
+                                              AppTheme
+                                                  .lightTheme
+                                                  .textTheme
+                                                  .bodyLarge,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
+                                              style: AppTheme
+                                                  .lightTheme
+                                                  .textTheme
+                                                  .titleSmall
+                                                  ?.copyWith(
+                                                    color: AppColors.primary,
+                                                  ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 25.00).toStringAsFixed(2)}',
+                                              style: AppTheme
+                                                  .lightTheme
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color: AppColors.error,
+                                                    decoration:
+                                                        TextDecoration
+                                                            .lineThrough,
+                                                  ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '\$25.00',
-                                  style:
-                                      AppTheme.lightTheme.textTheme.bodyMedium,
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: LikeButton(
+                                  size: 30,
+                                  circleColor: const CircleColor(
+                                    start: Color(0xff00ddff),
+                                    end: Color(0xff0099cc),
+                                  ),
+                                  bubblesColor: const BubblesColor(
+                                    dotPrimaryColor: Colors.pink,
+                                    dotSecondaryColor: Colors.white,
+                                  ),
+                                  likeBuilder: (bool isLiked) {
+                                    return Icon(
+                                      Icons.favorite,
+                                      color:
+                                          isLiked
+                                              ? Colors.red
+                                              : Colors.grey.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                      size: 30,
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: LikeButton(
-                        size: 30,
-                        circleColor: const CircleColor(
-                          start: Color(0xff00ddff),
-                          end: Color(0xff0099cc),
-                        ),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Colors.pink,
-                          dotSecondaryColor: Colors.white,
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            Icons.favorite,
-                            color:
-                                isLiked
-                                    ? Colors.red
-                                    : Colors.grey.withValues(alpha: 0.5),
-                            size: 30,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+                  ),
+                ],
+              ),
     );
   }
 
-  get _buildVerticalTitle {
+  Widget get _buildVerticalTitle {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverList(
@@ -331,6 +373,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   get _popularProductsGrid {
+    final bodyItems = HomeDataSlider.bodyItems;
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverGrid(
@@ -343,7 +386,11 @@ class HomeScreen extends StatelessWidget {
         delegate: SliverChildBuilderDelegate((context, index) {
           return Container(
             decoration: BoxDecoration(
-              color: color[index],
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(bodyItems[index]['image']!),
+                fit: BoxFit.cover,
+              ),
+
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
@@ -351,33 +398,59 @@ class HomeScreen extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      titleListSlider[index],
-                      style: AppTheme.lightTheme.textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
+                    SizedBox(
+                      width: double.infinity,
+                      height: 24,
+                      child: Container(
+                        color: Colors.white,
+                        alignment: Alignment.center,
+                        child: Text(
+                          bodyItems[index]['title']!.length > 20
+                              ? '${bodyItems[index]['title']!.substring(0, 17)}...'
+                              : bodyItems[index]['title']!,
+                          style: AppTheme.lightTheme.textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        top: 8,
-                        bottom: 8,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "\$45.00",
-                            style: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(
-                                  decoration: TextDecoration.lineThrough,
-                                ),
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(12),
                           ),
-                          Text(
-                            '\$25.00',
-                            style: AppTheme.lightTheme.textTheme.bodyMedium,
-                          ),
-                        ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 14,
+                                right: 4,
+                              ),
+                              child: Text(
+                                bodyItems[index]['price']!,
+                                style: AppTheme.lightTheme.textTheme.titleMedium
+                                    ?.copyWith(color: AppColors.primary),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 14),
+                              child: Text(
+                                bodyItems[index]['discount']!,
+                                style: AppTheme.lightTheme.textTheme.titleMedium
+                                    ?.copyWith(
+                                      decoration: TextDecoration.lineThrough,
+                                      color: AppColors.error,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -410,7 +483,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           );
-        }),
+        }, childCount: bodyItems.length),
       ),
     );
   }

@@ -1,38 +1,60 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:shopping_app/Modules/Home/models/product_model.dart';
+import 'package:shopping_app/core/service/api_service.dart';
+import 'package:shopping_app/core/string/string_con.dart';
 
 class HomeController extends GetxController {
-  final _currentPage = 0.obs;
-  final PageController _pageController = PageController();
-  Timer? _timer;
+  ApiService get apiService => ApiService(baseUrl: URL);
+  var isLoading = true.obs;
+  var currentPage = 0.obs;
+  var pageController = PageController();
+  var tShirtModels = <TShirtModel>[].obs;
 
-  PageController get pageController => _pageController;
-  int get currentPage => _currentPage.value;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTShirts();
+  }
 
-  void startAutoSlide(int itemCount) {
-    _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
-      if (_pageController.hasClients && itemCount > 0) {
-        int nextPage = (_currentPage.value.round() + 1) % itemCount;
-        _pageController.animateToPage(
+  void fetchTShirts() async {
+    try {
+      isLoading.value = true;
+      final response = await http.get(
+        Uri.parse('https://fakestoreapi.com/products'),
+      );
+      if (response.statusCode == 200) {
+        final List<TShirtModel> fetchedTShirts = tShirtModelFromJson(
+          response.body,
+        );
+        tShirtModels.assignAll(fetchedTShirts);
+      } else {
+        Get.snackbar('Error', 'Failed to fetch products');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Something went wrong: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void startAutoSlide(int length) {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (pageController.hasClients) {
+        int nextPage = (currentPage.value + 1) % length;
+        pageController.animateToPage(
           nextPage,
-          duration: Duration(milliseconds: 700),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.easeInOut,
         );
-        _currentPage.value = nextPage;
+        currentPage.value = nextPage;
+        startAutoSlide(length);
       }
     });
   }
 
   void updateCurrentPage(int index) {
-    _currentPage.value = index;
-  }
-
-  @override
-  void onClose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.onClose();
+    currentPage.value = index;
   }
 }

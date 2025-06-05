@@ -1,9 +1,3 @@
-// To parse this JSON data, do
-//
-//     final tShirtModel = tShirtModelFromJson(jsonString);
-
-// ignore_for_file: constant_identifier_names
-
 import 'dart:convert';
 
 List<TShirtModel> tShirtModelFromJson(String str) {
@@ -38,11 +32,11 @@ class TShirtModel {
   factory TShirtModel.fromJson(Map<String, dynamic> json) => TShirtModel(
     id: json["id"],
     title: json["title"],
-    price: json["price"].toDouble(),
+    price: (json["price"] ?? 0).toDouble(),
     description: json["description"],
     category: categoryValues.map[json["category"]],
     image: json["image"],
-    rating: Rating.fromJson(json["rating"]),
+    rating: json["rating"] != null ? Rating.fromJson(json["rating"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -72,19 +66,15 @@ class Rating {
   Rating({this.rate, this.count});
 
   factory Rating.fromJson(Map<String, dynamic> json) =>
-      Rating(rate: json["rate"].toDouble(), count: json["count"]);
+      Rating(rate: (json["rate"] ?? 0).toDouble(), count: json["count"] ?? 0);
 
   Map<String, dynamic> toJson() => {"rate": rate, "count": count};
 }
 
 class EnumValues<T> {
   Map<String, T> map;
-  late Map<T, String> reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
-    reverseMap = reverseMap;
-    return reverseMap;
-  }
+  Map<T, String> get reverse => map.map((k, v) => MapEntry(v, k));
 }

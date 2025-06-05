@@ -9,7 +9,6 @@ class BagScreen extends StatelessWidget {
   const BagScreen({super.key});
 
   final int _selectedIndex = 2;
-  // Bag tab index
   void _onNavItemTapped(int index) {
     if (index != _selectedIndex) {
       switch (index) {
