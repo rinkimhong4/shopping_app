@@ -1,16 +1,20 @@
-# shopping_app
+# Shopping App
 
-A new Flutter project.
+A Flutter project for a simple shopping application.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This repository contains the source code for a Flutter-based shopping app. To run the project:
 
-A few resources to get you started if this is your first Flutter project:
+1. Ensure you have [Flutter installed](https://docs.flutter.dev/get-started/install).
+2. Clone this repository.
+3. Run `flutter pub get` to fetch dependencies.
+4. Use `flutter run` to launch the app on your device or emulator.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Resources
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter Cookbook](https://docs.flutter.dev/cookbook)
+- [Flutter Documentation](https://docs.flutter.dev/)
+
+For additional help, refer to the official Flutter documentation for tutorials, samples, and API references.

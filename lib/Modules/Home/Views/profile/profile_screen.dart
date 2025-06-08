@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -63,7 +65,13 @@ class ProfileScreen extends StatelessWidget {
             ),
             titlePadding: EdgeInsets.only(left: 24, bottom: 18),
             centerTitle: false,
-            background: Container(color: AppColors.accent),
+            background: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                height: 78,
+                decoration: BoxDecoration(color: Colors.white70),
+              ),
+            ),
           ),
           floating: false,
           pinned: true,

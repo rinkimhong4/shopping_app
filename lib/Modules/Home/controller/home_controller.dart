@@ -19,33 +19,27 @@ class HomeController extends GetxController {
   }
 
   void fetchTShirts() async {
+    var client = http.Client();
     try {
       isLoading.value = true;
-      final response = await http.get(
-        Uri.parse('https://fakestoreapi.com/products'),
+      final response = await client.get(
+        Uri.http('fakestoreapi.com', 'products/'),
       );
-      if (response.statusCode == 200) {
-        final List<TShirtModel> fetchedTShirts = tShirtModelFromJson(
-          response.body,
-        );
-        tShirtModels.assignAll(fetchedTShirts);
-      } else {
-        Get.snackbar('Error', 'Failed to fetch products');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Something went wrong: $e');
+      final fetchedTShirts = tShirtModelFromJson(response.body);
+      tShirtModels.assignAll(fetchedTShirts);
     } finally {
+      client.close();
       isLoading.value = false;
     }
   }
 
   void startAutoSlide(int length) {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (pageController.hasClients) {
         int nextPage = (currentPage.value + 1) % length;
         pageController.animateToPage(
           nextPage,
-          duration: const Duration(milliseconds: 400),
+          duration: Duration(seconds: 1),
           curve: Curves.easeInOut,
         );
         currentPage.value = nextPage;

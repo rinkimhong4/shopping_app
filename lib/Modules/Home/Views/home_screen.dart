@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:shopping_app/Modules/items/items_screen_api.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/core/data/home_data.dart';
@@ -108,7 +109,6 @@ class HomeScreen extends GetView<HomeController> {
       ],
     );
   }
-  /*******  f2768fcf-3ad6-4583-b3ad-c67bdfa8e223  *******/
 
   get _bannerSlider {
     final controller = Get.find<HomeController>();
@@ -180,13 +180,14 @@ class HomeScreen extends GetView<HomeController> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           DotsIndicator(
             dotsCount: bannerItems.length,
             position: controller.currentPage.toDouble(),
             decorator: DotsDecorator(
-              size: const Size.square(5),
-              activeSize: const Size(10, 8),
+              size: Size.square(5),
+              activeSize: Size(10, 8),
+              activeColor: AppColors.primary,
             ),
           ),
         ],
@@ -233,119 +234,124 @@ class HomeScreen extends GetView<HomeController> {
                       itemCount: controller.tShirtModels.length,
                       itemBuilder: (context, index) {
                         final tShirt = controller.tShirtModels[index];
-                        return Container(
-                          width: 160,
-                          margin: const EdgeInsets.only(right: 14),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: CachedNetworkImageProvider(
-                                      tShirt.image ?? '',
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(() => DetailScreen(productList: tShirt));
+                          },
+                          child: Container(
+                            width: 160,
+                            margin: const EdgeInsets.only(right: 14),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: CachedNetworkImageProvider(
+                                        tShirt.image ?? '',
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
-                                    fit: BoxFit.cover,
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                padding: const EdgeInsets.only(top: 140),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
+                                  padding: const EdgeInsets.only(top: 140),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+
+                                          child: Text(
+                                            tShirt.title ?? 'No Title',
+                                            style:
+                                                AppTheme
+                                                    .lightTheme
+                                                    .textTheme
+                                                    .bodyLarge,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                         ),
-
-                                        child: Text(
-                                          tShirt.title ?? 'No Title',
-                                          style:
-                                              AppTheme
-                                                  .lightTheme
-                                                  .textTheme
-                                                  .bodyLarge,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 0).toStringAsFixed(2)}',
+                                                style: AppTheme
+                                                    .lightTheme
+                                                    .textTheme
+                                                    .titleSmall
+                                                    ?.copyWith(
+                                                      color: AppColors.primary,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
+                                                style: AppTheme
+                                                    .lightTheme
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.copyWith(
+                                                      decoration:
+                                                          TextDecoration
+                                                              .lineThrough,
+                                                      color: AppColors.error,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Flexible(
-                                            child: Text(
-                                              "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
-                                              style: AppTheme
-                                                  .lightTheme
-                                                  .textTheme
-                                                  .titleSmall
-                                                  ?.copyWith(
-                                                    color: AppColors.primary,
-                                                  ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 25.00).toStringAsFixed(2)}',
-                                              style: AppTheme
-                                                  .lightTheme
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    color: AppColors.error,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .lineThrough,
-                                                  ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: LikeButton(
-                                  size: 30,
-                                  circleColor: const CircleColor(
-                                    start: Color(0xff00ddff),
-                                    end: Color(0xff0099cc),
+                                    ],
                                   ),
-                                  bubblesColor: const BubblesColor(
-                                    dotPrimaryColor: Colors.pink,
-                                    dotSecondaryColor: Colors.white,
-                                  ),
-                                  likeBuilder: (bool isLiked) {
-                                    return Icon(
-                                      Icons.favorite,
-                                      color:
-                                          isLiked
-                                              ? Colors.red
-                                              : Colors.grey.withValues(
-                                                alpha: 0.5,
-                                              ),
-                                      size: 30,
-                                    );
-                                  },
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: LikeButton(
+                                    size: 30,
+                                    circleColor: const CircleColor(
+                                      start: Color(0xff00ddff),
+                                      end: Color(0xff0099cc),
+                                    ),
+                                    bubblesColor: const BubblesColor(
+                                      dotPrimaryColor: Colors.pink,
+                                      dotSecondaryColor: Colors.white,
+                                    ),
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked
+                                                ? Colors.red
+                                                : Colors.grey.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                        size: 30,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -372,8 +378,10 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  get _popularProductsGrid {
-    final bodyItems = HomeDataSlider.bodyItems;
+  SliverPadding get _popularProductsGrid {
+    final bodyItems =
+        HomeDataSlider.bodyItems['products'] as Set<Map<String, dynamic>>;
+    final productsList = bodyItems.toList();
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverGrid(
@@ -384,13 +392,13 @@ class HomeScreen extends GetView<HomeController> {
           childAspectRatio: 0.85,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
+          final item = productsList[index];
           return Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: CachedNetworkImageProvider(bodyItems[index]['image']!),
+                image: CachedNetworkImageProvider(item['image'] ?? ''),
                 fit: BoxFit.cover,
               ),
-
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
@@ -405,9 +413,9 @@ class HomeScreen extends GetView<HomeController> {
                         color: Colors.white,
                         alignment: Alignment.center,
                         child: Text(
-                          bodyItems[index]['title']!.length > 20
-                              ? '${bodyItems[index]['title']!.substring(0, 17)}...'
-                              : bodyItems[index]['title']!,
+                          item['title'] != null && item['title']!.length > 20
+                              ? '${item['title']!.substring(0, 17)}...'
+                              : item['title'] ?? '',
                           style: AppTheme.lightTheme.textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
@@ -433,7 +441,7 @@ class HomeScreen extends GetView<HomeController> {
                                 right: 4,
                               ),
                               child: Text(
-                                bodyItems[index]['price']!,
+                                item['price'] ?? '',
                                 style: AppTheme.lightTheme.textTheme.titleMedium
                                     ?.copyWith(color: AppColors.primary),
                               ),
@@ -441,7 +449,7 @@ class HomeScreen extends GetView<HomeController> {
                             Padding(
                               padding: EdgeInsets.only(right: 14),
                               child: Text(
-                                bodyItems[index]['discount']!,
+                                item['discount'] ?? '',
                                 style: AppTheme.lightTheme.textTheme.titleMedium
                                     ?.copyWith(
                                       decoration: TextDecoration.lineThrough,
@@ -460,7 +468,7 @@ class HomeScreen extends GetView<HomeController> {
                   right: 8,
                   child: LikeButton(
                     size: 30,
-                    circleColor: const CircleColor(
+                    circleColor: CircleColor(
                       start: Color(0xff00ddff),
                       end: Color(0xff0099cc),
                     ),
@@ -483,7 +491,7 @@ class HomeScreen extends GetView<HomeController> {
               ],
             ),
           );
-        }, childCount: bodyItems.length),
+        }, childCount: productsList.length),
       ),
     );
   }
