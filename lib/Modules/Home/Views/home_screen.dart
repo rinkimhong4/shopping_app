@@ -58,9 +58,19 @@ class HomeScreen extends GetView<HomeController> {
           automaticallyImplyLeading: false,
           expandedHeight: 40,
           flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              'HypeWear!',
-              style: AppTheme.lightTheme.textTheme.titleLarge,
+            title: Row(
+              children: [
+                Text(
+                  'HypeWear',
+                  style: AppTheme.lightTheme.textTheme.titleLarge,
+                ),
+                Text(
+                  '!',
+                  style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
             titlePadding: EdgeInsets.only(left: 24, bottom: 18),
             centerTitle: false,

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:shopping_app/Modules/Home/Views/filter_screen.dart';
 import 'package:shopping_app/Modules/Home/models/product_model.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
@@ -11,7 +12,6 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate pricing details
     final double originalPrice = productList.price ?? 0.0;
     final double discount = originalPrice * 0.45;
     final double discountedPrice = originalPrice - discount;
@@ -20,7 +20,7 @@ class DetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: _buildAppBar(),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.accent,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,6 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds the AppBar with a Like button
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: AppColors.accent,
@@ -58,7 +57,8 @@ class DetailScreen extends StatelessWidget {
             likeBuilder: (bool isLiked) {
               return Icon(
                 Icons.favorite,
-                color: isLiked ? Colors.red : Colors.grey.withOpacity(0.5),
+                color:
+                    isLiked ? Colors.red : Colors.grey.withValues(alpha: 0.5),
                 size: 30,
               );
             },
@@ -68,7 +68,6 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds the product image widget
   Widget _buildProductImage() {
     return CachedNetworkImage(
       imageUrl: productList.image ?? '',
@@ -84,7 +83,6 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds the product details section
   Widget _buildProductDetails(
     BuildContext context,
     double originalPrice,
@@ -156,7 +154,6 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds the product description
   Widget _buildProductDescription() {
     return Text(
       productList.description ?? 'No description available',
@@ -167,25 +164,29 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds the action buttons (Add to Bag and Add to Cart)
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          height: 56,
-          width: 56,
-          decoration: BoxDecoration(
-            color: AppColors.textSecondary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            Icons.shopping_bag_outlined,
-            size: 32,
-            color: AppColors.primary,
+        GestureDetector(
+          onTap: () {
+            // Add your shopping bag functionality here
+          },
+          child: Container(
+            height: 56,
+            width: 56,
+            decoration: BoxDecoration(
+              color: AppColors.textSecondary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              size: 32,
+              color: AppColors.primary,
+            ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -197,12 +198,16 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Added ${productList.title ?? 'item'} to cart'),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => ClothingFilterPopup(product: productList),
+              ).then((result) {
+                if (result != null) {
+                  print('Selected: $result');
+                }
+              });
             },
             child: Text(
               'Add to Cart',
