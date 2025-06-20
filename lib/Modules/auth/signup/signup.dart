@@ -196,6 +196,24 @@ class _SignupScreenState extends State<SignupScreen> {
                                         ? AppColors.primary
                                         : AppColors.textSecondary,
                               ),
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(right: 14),
+                                child: InkWell(
+                                  onTap:
+                                      () => setState(
+                                        () => pwdVisibility = !pwdVisibility,
+                                      ),
+                                  child: Icon(
+                                    pwdVisibility
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color:
+                                        hasFocus
+                                            ? AppColors.primary
+                                            : AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32),
                                 borderSide: BorderSide(
@@ -234,7 +252,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             controller: controller.confPasswordCtrl,
                             obscureText: !pwdVisibility,
                             decoration: InputDecoration(
-                              labelText: "Password",
+                              labelText: "Confirm Password",
                               hintText: "Confirm Password",
                               hintStyle: AppTheme
                                   .lightTheme
@@ -253,6 +271,24 @@ class _SignupScreenState extends State<SignupScreen> {
                                     hasFocus
                                         ? AppColors.primary
                                         : AppColors.textSecondary,
+                              ),
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(right: 14),
+                                child: InkWell(
+                                  onTap:
+                                      () => setState(
+                                        () => pwdVisibility = !pwdVisibility,
+                                      ),
+                                  child: Icon(
+                                    pwdVisibility
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color:
+                                        hasFocus
+                                            ? AppColors.primary
+                                            : AppColors.textSecondary,
+                                  ),
+                                ),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32),

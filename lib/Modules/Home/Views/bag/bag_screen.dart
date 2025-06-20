@@ -33,7 +33,6 @@ class BagScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-
       body: _buildBody(),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,

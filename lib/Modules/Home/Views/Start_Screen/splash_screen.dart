@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
     _timer = Timer(const Duration(seconds: 3), () {
       if (mounted) {
         _controller.reverse().then((_) {
-          Get.offNamed(AppRoute.login);
+          Get.offNamed(AppRoute.onboarding);
         });
       }
     });

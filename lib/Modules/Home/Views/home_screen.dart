@@ -1,12 +1,13 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/Modules/items/items_screen_api.dart';
+import 'package:shopping_app/Modules/items/items_screen_non_api.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/core/data/home_data.dart';
@@ -40,9 +41,9 @@ class HomeScreen extends GetView<HomeController> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.startAutoSlide(HomeDataSlider.bannerItems.length);
     });
-
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: _buildPreferredAppBar(),
       body: _buildBody(),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,
@@ -51,72 +52,68 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildBody() {
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          automaticallyImplyLeading: false,
-          expandedHeight: 40,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Row(
-              children: [
-                Text(
-                  'HypeWear',
-                  style: AppTheme.lightTheme.textTheme.titleLarge,
-                ),
-                Text(
-                  '!',
-                  style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-            titlePadding: EdgeInsets.only(left: 24, bottom: 18),
-            centerTitle: false,
-            background: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                height: 78,
-                decoration: BoxDecoration(color: Colors.white70),
-              ),
+  _buildPreferredAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: AppColors.accent,
+      title: Row(
+        children: [
+          Text('HypeWear', style: AppTheme.lightTheme.textTheme.titleLarge),
+          Text(
+            '!',
+            style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
+              color: AppColors.primary,
             ),
           ),
-          floating: false,
-          pinned: true,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          actions: [
-            IconButton(
-              icon: SvgPicture.asset(
-                'assets/icons/chat-circle-dots.svg',
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: SvgPicture.asset(
-                'assets/icons/icons-bell.svg',
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
-              ),
-              onPressed: () {},
-            ),
-            SizedBox(width: 14),
-          ],
+        ],
+      ),
+      actions: [
+        IconButton(
+          icon: SvgPicture.asset(
+            'assets/icons/chat-circle-dots.svg',
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+          ),
+          onPressed: () {
+            Get.toNamed(AppRoute.notification);
+          },
         ),
-        SliverList(
-          delegate: SliverChildListDelegate([
-            _bannerSlider,
-            _buildHorizontalSlide,
-          ]),
+        IconButton(
+          icon: SvgPicture.asset(
+            'assets/icons/icons-bell.svg',
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+          ),
+          onPressed: () {
+            Get.toNamed(AppRoute.masonry);
+          },
         ),
-        _buildVerticalTitle,
-        _popularProductsGrid,
+        SizedBox(width: 14),
       ],
+    );
+  }
+
+  Widget _buildBody() {
+    return SmartRefresher(
+      controller: controller.refreshController,
+      enablePullDown: true,
+      header: WaterDropHeader(waterDropColor: AppColors.primary),
+      onRefresh: controller.onRefresh,
+      child: CustomScrollView(
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _bannerSlider,
+              _buildHorizontalSlide,
+            ]),
+          ),
+          _buildVerticalTitle,
+          _popularProductsGrid,
+        ],
+      ),
     );
   }
 
@@ -124,83 +121,93 @@ class HomeScreen extends GetView<HomeController> {
     final controller = Get.find<HomeController>();
     final bannerItems = HomeDataSlider.bannerItems;
     return Obx(
-      () => Column(
-        children: [
-          SizedBox(
-            height: 230,
-            width: double.infinity,
-            child: PageView.builder(
-              controller: controller.pageController,
-              itemCount: bannerItems.length,
-              onPageChanged: (index) {
-                controller.updateCurrentPage(index);
-              },
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        bannerItems[index]['image']!,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 110),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            bannerItems[index]['title']!,
-                            style: const TextStyle(
-                              fontSize: 28,
-                              color: Colors.white,
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              shadowColor: Colors.transparent,
-                              side: BorderSide(
-                                color: AppColors.accent,
-                                width: 1,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 60),
-                            ),
-                            onPressed: () {
-                              //
-                            },
-                            child: Text(
-                              'Shop Now',
-                              style: AppTheme.lightTheme.textTheme.titleSmall
-                                  ?.copyWith(color: AppColors.accent),
-                            ),
-                          ),
-                        ],
+      () => SizedBox(
+        height: 240,
+        width: double.infinity,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: PageView.builder(
+                controller: controller.pageController,
+                itemCount: bannerItems.length,
+                onPageChanged: controller.updateCurrentPage,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          bannerItems[index]['image']!,
+                        ),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: Column(
+                          spacing: 14,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              bannerItems[index]['title']!,
+                              style: AppTheme
+                                  .lightTheme
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.copyWith(color: AppColors.background),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                shadowColor: Colors.transparent,
+                                side: BorderSide(
+                                  color: AppColors.accent,
+                                  width: 1,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 60),
+                              ),
+                              onPressed: () {
+                                //
+                              },
+                              child: Text(
+                                'Shop Now',
+                                style: AppTheme.lightTheme.textTheme.titleSmall
+                                    ?.copyWith(color: AppColors.accent),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              bottom: 4,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: DotsIndicator(
+                    dotsCount: bannerItems.length,
+                    position: controller.currentPage.toDouble(),
+                    decorator: DotsDecorator(
+                      size: Size.square(6),
+                      activeSize: Size(14, 10),
+                      activeColor: AppColors.error,
+                    ),
                   ),
-                );
-              },
+                ),
+              ),
             ),
-          ),
-          SizedBox(height: 12),
-          DotsIndicator(
-            dotsCount: bannerItems.length,
-            position: controller.currentPage.toDouble(),
-            decorator: DotsDecorator(
-              size: Size.square(5),
-              activeSize: Size(10, 8),
-              activeColor: AppColors.primary,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -272,31 +279,32 @@ class HomeScreen extends GetView<HomeController> {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                           ),
-
-                                          child: Text(
-                                            tShirt.title ?? 'No Title',
-                                            style:
-                                                AppTheme
-                                                    .lightTheme
-                                                    .textTheme
-                                                    .bodyLarge,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                            ),
+                                            child: Text(
+                                              tShirt.title ?? 'No Title',
+                                              style:
+                                                  AppTheme
+                                                      .lightTheme
+                                                      .textTheme
+                                                      .bodyLarge,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
+                                        height: 20,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           children: [
                                             Flexible(
                                               child: Text(
@@ -304,7 +312,7 @@ class HomeScreen extends GetView<HomeController> {
                                                 style: AppTheme
                                                     .lightTheme
                                                     .textTheme
-                                                    .titleSmall
+                                                    .bodyMedium
                                                     ?.copyWith(
                                                       color: AppColors.primary,
                                                     ),
@@ -337,7 +345,7 @@ class HomeScreen extends GetView<HomeController> {
                                   top: 8,
                                   right: 8,
                                   child: LikeButton(
-                                    size: 30,
+                                    size: 26,
                                     circleColor: const CircleColor(
                                       start: Color(0xff00ddff),
                                       end: Color(0xff0099cc),
@@ -352,11 +360,13 @@ class HomeScreen extends GetView<HomeController> {
                                         color:
                                             isLiked
                                                 ? Colors.red
-                                                : Colors.grey.withValues(
-                                                  alpha: 0.5,
-                                                ),
+                                                : AppColors.textSecondary
+                                                    .withValues(alpha: 0.5),
                                         size: 30,
                                       );
+                                    },
+                                    onTap: (isLiked) async {
+                                      return !isLiked;
                                     },
                                   ),
                                 ),
@@ -388,7 +398,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  SliverPadding get _popularProductsGrid {
+  get _popularProductsGrid {
     final bodyItems =
         HomeDataSlider.bodyItems['products'] as Set<Map<String, dynamic>>;
     final productsList = bodyItems.toList();
@@ -399,106 +409,115 @@ class HomeScreen extends GetView<HomeController> {
           crossAxisCount: 2,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          childAspectRatio: 0.85,
+          childAspectRatio: 0.8,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
           final item = productsList[index];
-          return Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(item['image'] ?? ''),
-                fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () {
+              Get.to(() => DetainScreenNonAPI(product: Product.fromJson(item)));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(item['image'].toString()),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: 24,
-                      child: Container(
-                        color: Colors.white,
-                        alignment: Alignment.center,
-                        child: Text(
-                          item['title'] != null && item['title']!.length > 20
-                              ? '${item['title']!.substring(0, 17)}...'
-                              : item['title'] ?? '',
-                          style: AppTheme.lightTheme.textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 0),
-                      child: Container(
-                        width: double.infinity,
-                        height: 30,
-                        decoration: BoxDecoration(
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        child: Container(
                           color: Colors.white,
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(12),
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8, top: 8),
+                            child: Text(
+                              item['title'] != null &&
+                                      item['title']!.length > 20
+                                  ? '${item['title']?.substring(0, 17)} '
+                                  : item['title'] ?? '',
+
+                              style: AppTheme.lightTheme.textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 14,
-                                right: 4,
-                              ),
-                              child: Text(
-                                item['price'] ?? '',
-                                style: AppTheme.lightTheme.textTheme.titleMedium
-                                    ?.copyWith(color: AppColors.primary),
-                              ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(12),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 14),
-                              child: Text(
-                                item['discount'] ?? '',
-                                style: AppTheme.lightTheme.textTheme.titleMedium
-                                    ?.copyWith(
-                                      decoration: TextDecoration.lineThrough,
-                                      color: AppColors.error,
-                                    ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 14,
+                                  right: 4,
+                                ),
+                                child: Text(
+                                  '\$${item['price'] ?? ''}',
+                                  style: AppTheme
+                                      .lightTheme
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(color: AppColors.primary),
+                                ),
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: EdgeInsets.only(right: 14),
+                                child: Text(
+                                  '\$${item['discount'] ?? ''}',
+                                  style: AppTheme.lightTheme.textTheme.bodyLarge
+                                      ?.copyWith(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: AppColors.error,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: LikeButton(
-                    size: 30,
-                    circleColor: CircleColor(
-                      start: Color(0xff00ddff),
-                      end: Color(0xff0099cc),
-                    ),
-                    bubblesColor: const BubblesColor(
-                      dotPrimaryColor: Colors.pink,
-                      dotSecondaryColor: Colors.white,
-                    ),
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.favorite,
-                        color:
-                            isLiked
-                                ? Colors.red
-                                : Colors.grey.withValues(alpha: 0.5),
-                        size: 30,
-                      );
-                    },
+                    ],
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: LikeButton(
+                      size: 30,
+                      circleColor: CircleColor(
+                        start: Color(0xff00ddff),
+                        end: Color(0xff0099cc),
+                      ),
+                      bubblesColor: const BubblesColor(
+                        dotPrimaryColor: Colors.pink,
+                        dotSecondaryColor: Colors.white,
+                      ),
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color:
+                              isLiked
+                                  ? Colors.red
+                                  : Colors.grey.withValues(alpha: 0.5),
+                          size: 30,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }, childCount: productsList.length),

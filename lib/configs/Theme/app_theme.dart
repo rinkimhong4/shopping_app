@@ -34,6 +34,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
+      headlineMedium: TextStyle(fontSize: 28, color: AppColors.textPrimary),
       titleLarge: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w600,
@@ -54,9 +55,10 @@ class AppTheme {
         fontWeight: FontWeight.normal,
         color: AppColors.textPrimary,
       ),
+
       bodyMedium: TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: AppColors.textPrimary,
       ),
       bodySmall: TextStyle(

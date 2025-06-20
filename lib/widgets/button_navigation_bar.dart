@@ -54,14 +54,14 @@ class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          // borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
               height: 78,
               decoration: const BoxDecoration(
                 color: Colors.white70,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                // borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

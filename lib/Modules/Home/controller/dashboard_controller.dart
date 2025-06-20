@@ -6,14 +6,12 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     Future.delayed(const Duration(seconds: 2), () {
       final session = Supabase.instance.client.auth.currentSession;
-
       if (session != null) {
         Get.offAllNamed(AppRoute.home);
       } else {
-        Get.offAllNamed(AppRoute.login);
+        Get.offAllNamed(AppRoute.onboarding);
       }
     });
   }
