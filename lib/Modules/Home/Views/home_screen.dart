@@ -5,9 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
-import 'package:shopping_app/Modules/items/items_screen_api.dart';
-import 'package:shopping_app/Modules/items/items_screen_non_api.dart';
+import 'package:shopping_app/Modules/items/home/items_screen_api.dart';
+import 'package:shopping_app/Modules/items/home/items_screen_non_api.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/core/data/home_data.dart';
@@ -43,7 +45,7 @@ class HomeScreen extends GetView<HomeController> {
     });
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: _buildPreferredAppBar(),
+      appBar: _buildAppBar(),
       body: _buildBody(),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,
@@ -52,7 +54,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildPreferredAppBar() {
+  _buildAppBar() {
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
@@ -71,7 +73,7 @@ class HomeScreen extends GetView<HomeController> {
       actions: [
         IconButton(
           icon: SvgPicture.asset(
-            'assets/icons/chat-circle-dots.svg',
+            AppAssets.chatCircle,
             width: 24,
             height: 24,
             colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
@@ -82,7 +84,7 @@ class HomeScreen extends GetView<HomeController> {
         ),
         IconButton(
           icon: SvgPicture.asset(
-            'assets/icons/icons-bell.svg',
+            AppAssets.bell,
             width: 24,
             height: 24,
             colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
@@ -121,94 +123,114 @@ class HomeScreen extends GetView<HomeController> {
     final controller = Get.find<HomeController>();
     final bannerItems = HomeDataSlider.bannerItems;
     return Obx(
-      () => SizedBox(
-        height: 240,
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: PageView.builder(
-                controller: controller.pageController,
-                itemCount: bannerItems.length,
-                onPageChanged: controller.updateCurrentPage,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          bannerItems[index]['image']!,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50),
-                        child: Column(
-                          spacing: 14,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              bannerItems[index]['title']!,
-                              style: AppTheme
-                                  .lightTheme
-                                  .textTheme
-                                  .headlineMedium
-                                  ?.copyWith(color: AppColors.background),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                shadowColor: Colors.transparent,
-                                side: BorderSide(
-                                  color: AppColors.accent,
-                                  width: 1,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 60),
-                              ),
-                              onPressed: () {
-                                //
-                              },
-                              child: Text(
-                                'Shop Now',
-                                style: AppTheme.lightTheme.textTheme.titleSmall
-                                    ?.copyWith(color: AppColors.accent),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Positioned(
-              bottom: 4,
-              left: 0,
-              right: 0,
-              child: Center(
+      () =>
+          controller.isLoading.value
+              ? Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: DotsIndicator(
-                    dotsCount: bannerItems.length,
-                    position: controller.currentPage.toDouble(),
-                    decorator: DotsDecorator(
-                      size: Size.square(6),
-                      activeSize: Size(14, 10),
-                      activeColor: AppColors.error,
+                  height: 240,
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              )
+              : SizedBox(
+                height: 240,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: PageView.builder(
+                        controller: controller.pageController,
+                        itemCount: bannerItems.length,
+                        onPageChanged: controller.updateCurrentPage,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                  bannerItems[index]['image']!,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 50),
+                                child: Column(
+                                  spacing: 14,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      bannerItems[index]['title']!,
+                                      style: AppTheme
+                                          .lightTheme
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            color: AppColors.background,
+                                          ),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
+                                        shadowColor: Colors.transparent,
+                                        side: BorderSide(
+                                          color: AppColors.accent,
+                                          width: 1,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            32,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 60,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        //
+                                      },
+                                      child: Text(
+                                        'Shop Now',
+                                        style: AppTheme
+                                            .lightTheme
+                                            .textTheme
+                                            .titleSmall
+                                            ?.copyWith(color: AppColors.accent),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      bottom: 4,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: DotsIndicator(
+                            dotsCount: bannerItems.length,
+                            position: controller.currentPage.toDouble(),
+                            decorator: DotsDecorator(
+                              size: Size.square(6),
+                              activeSize: Size(14, 10),
+                              activeColor: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -217,28 +239,32 @@ class HomeScreen extends GetView<HomeController> {
     return Obx(
       () =>
           controller.isLoading.value
-              ? Center(child: CircularProgressIndicator.adaptive())
+              ? _buildHorizontalSlideShimmer()
               : controller.tShirtModels.isEmpty
               ? Center(child: Text('No found'))
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 14, right: 14),
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      left: 14,
+                      right: 14,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
-                            vertical: 6,
+                            vertical: 8,
                           ),
                           child: Text(
                             'Selling Fast 🔥',
                             style: AppTheme.lightTheme.textTheme.titleMedium,
                           ),
                         ),
-                        const CustomTimePicker(),
+                        CustomTimePicker(),
                       ],
                     ),
                   ),
@@ -382,15 +408,93 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget get _buildVerticalTitle {
+  _buildHorizontalSlideShimmer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 15, left: 14, right: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 120,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 80,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 24),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 14),
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 160,
+                  margin: const EdgeInsets.only(right: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  get _buildVerticalTitle {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
-          const SizedBox(height: 24),
-          Text(
-            'Popular Products',
-            style: AppTheme.lightTheme.textTheme.titleMedium,
+          SizedBox(height: 30),
+          Obx(
+            () =>
+                controller.isLoading.value
+                    ? Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    )
+                    : Text(
+                      'Popular Products',
+                      style: AppTheme.lightTheme.textTheme.titleMedium,
+                    ),
           ),
           const SizedBox(height: 24),
         ]),
@@ -399,129 +503,184 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   get _popularProductsGrid {
+    final controller = Get.find<HomeController>();
     final bodyItems =
         HomeDataSlider.bodyItems['products'] as Set<Map<String, dynamic>>;
     final productsList = bodyItems.toList();
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 0.8,
-        ),
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final item = productsList[index];
-          return GestureDetector(
-            onTap: () {
-              Get.to(() => DetainScreenNonAPI(product: Product.fromJson(item)));
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(item['image'].toString()),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        child: Container(
-                          color: Colors.white,
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8, top: 8),
-                            child: Text(
-                              item['title'] != null &&
-                                      item['title']!.length > 20
-                                  ? '${item['title']?.substring(0, 17)} '
-                                  : item['title'] ?? '',
 
-                              style: AppTheme.lightTheme.textTheme.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(12),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 14,
-                                  right: 4,
-                                ),
-                                child: Text(
-                                  '\$${item['price'] ?? ''}',
-                                  style: AppTheme
-                                      .lightTheme
-                                      .textTheme
-                                      .titleSmall
-                                      ?.copyWith(color: AppColors.primary),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(right: 14),
-                                child: Text(
-                                  '\$${item['discount'] ?? ''}',
-                                  style: AppTheme.lightTheme.textTheme.bodyLarge
-                                      ?.copyWith(
-                                        decoration: TextDecoration.lineThrough,
-                                        color: AppColors.error,
-                                      ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+    return Obx(
+      () =>
+          controller.isLoading.value
+              ? SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.8,
                   ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: LikeButton(
-                      size: 30,
-                      circleColor: CircleColor(
-                        start: Color(0xff00ddff),
-                        end: Color(0xff0099cc),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      bubblesColor: const BubblesColor(
-                        dotPrimaryColor: Colors.pink,
-                        dotSecondaryColor: Colors.white,
-                      ),
-                      likeBuilder: (bool isLiked) {
-                        return Icon(
-                          Icons.favorite,
-                          color:
-                              isLiked
-                                  ? Colors.red
-                                  : Colors.grey.withValues(alpha: 0.5),
-                          size: 30,
+                    );
+                  }, childCount: 4),
+                ),
+              )
+              : SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.8,
+                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = productsList[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          () => DetainScreenNonAPI(
+                            product: Product.fromJson(item),
+                          ),
                         );
                       },
-                    ),
-                  ),
-                ],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              item['image'].toString(),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Stack(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  child: Container(
+                                    color: Colors.white,
+                                    alignment: Alignment.center,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 8,
+                                        top: 8,
+                                      ),
+                                      child: Text(
+                                        item['title'] != null &&
+                                                item['title']!.length > 20
+                                            ? '${item['title']?.substring(0, 17)} '
+                                            : item['title'] ?? '',
+                                        style:
+                                            AppTheme
+                                                .lightTheme
+                                                .textTheme
+                                                .bodyLarge,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.vertical(
+                                        bottom: Radius.circular(12),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 14,
+                                            right: 4,
+                                          ),
+                                          child: Text(
+                                            '\$${item['price'] ?? ''}',
+                                            style: AppTheme
+                                                .lightTheme
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  color: AppColors.primary,
+                                                ),
+                                          ),
+                                        ),
+                                        if (item['discount'] != null &&
+                                            item['discount']
+                                                .toString()
+                                                .isNotEmpty)
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 14),
+                                            child: Text(
+                                              '\$${item['discount']}',
+                                              style: AppTheme
+                                                  .lightTheme
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.copyWith(
+                                                    decoration:
+                                                        TextDecoration
+                                                            .lineThrough,
+                                                    color: AppColors.error,
+                                                  ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: LikeButton(
+                                size: 30,
+                                circleColor: CircleColor(
+                                  start: Color(0xff00ddff),
+                                  end: Color(0xff0099cc),
+                                ),
+                                bubblesColor: const BubblesColor(
+                                  dotPrimaryColor: Colors.pink,
+                                  dotSecondaryColor: Colors.white,
+                                ),
+                                likeBuilder: (bool isLiked) {
+                                  return Icon(
+                                    Icons.favorite,
+                                    color:
+                                        isLiked
+                                            ? Colors.red
+                                            : Colors.grey.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                    size: 30,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }, childCount: productsList.length),
+                ),
               ),
-            ),
-          );
-        }, childCount: productsList.length),
-      ),
     );
   }
 }

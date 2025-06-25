@@ -282,6 +282,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       controller.emailCtrl.text.trim(),
                                       controller.passwordCtrl.text,
                                     );
+                                    // Clear fields only if sign-in was successful
+                                    if (controller.currentUser != null) {
+                                      controller.emailCtrl.clear();
+                                      controller.passwordCtrl.clear();
+                                    }
                                   }
                                 },
                                 child:

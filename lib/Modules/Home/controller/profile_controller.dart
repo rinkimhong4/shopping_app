@@ -6,6 +6,7 @@ class ProfileController extends GetxController {
   final _supabase = Supabase.instance.client;
 
   RxString username = ''.obs;
+  RxString email = ''.obs;
 
   Future<Map<String, dynamic>?> getUserProfile() async {
     try {
@@ -14,48 +15,25 @@ class ProfileController extends GetxController {
         Get.offAndToNamed(AppRoute.login);
         return null;
       }
+
       final response =
           await _supabase
               .from('profiles')
               .select('*')
               .eq('id', user.id)
               .maybeSingle();
+
       if (response == null) {
+        // Create new profile with both username and email
         final newProfile =
             await _supabase
                 .from('profiles')
                 .insert({
                   'id': user.id,
                   'username': user.email?.split('@')[0] ?? 'Guest',
+                  'email': user.email ?? '',
+                  'created_at': DateTime.now().toIso8601String(),
                 })
-                .select()
-                .single();
-        return newProfile;
-      }
-      return response;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>?> getUserProfileEmail() async {
-    try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) {
-        Get.offAndToNamed(AppRoute.login);
-        return null;
-      }
-      final response =
-          await _supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', user.id)
-              .maybeSingle();
-      if (response == null) {
-        final newProfile =
-            await _supabase
-                .from('profiles')
-                .insert({'id': user.id, 'username': user.email ?? 'Guest'})
                 .select()
                 .single();
         return newProfile;
@@ -72,7 +50,9 @@ class ProfileController extends GetxController {
 
     final response =
         await _supabase.from('profiles').select().eq('id', userId).single();
+
     username.value = response['username'] ?? '';
+    email.value = response['email'] ?? _supabase.auth.currentUser?.email ?? '';
   }
 
   Future<void> updateProfile(String newUsername) async {
@@ -82,7 +62,7 @@ class ProfileController extends GetxController {
     await _supabase.from('profiles').upsert({
       'id': userId,
       'username': newUsername,
-      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
     });
     username.value = newUsername;
   }

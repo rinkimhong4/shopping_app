@@ -15,7 +15,6 @@ class AuthController extends GetxController {
   Future<void> signUp(String email, String password) async {
     try {
       isLoading.value = true;
-
       final response = await _supabase.auth.signUp(
         email: email.trim().toLowerCase(),
         password: password.trim(),
@@ -134,12 +133,10 @@ class AuthController extends GetxController {
   Future<void> signIn(String email, String password) async {
     try {
       isLoading.value = true;
-
       final response = await _supabase.auth.signInWithPassword(
         email: email.trim().toLowerCase(),
         password: password.trim(),
       );
-
       if (response.session != null) {
         await LocalStorageService.instance.setString(
           'user_id',

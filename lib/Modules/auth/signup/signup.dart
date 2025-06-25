@@ -359,6 +359,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                     controller.emailCtrl.text.trim(),
                                     controller.passwordCtrl.text.trim(),
                                   );
+                                  if (controller.currentUser != null) {
+                                    controller.emailCtrl.clear();
+                                    controller.passwordCtrl.clear();
+                                    controller.confPasswordCtrl.clear();
+                                  }
                                 } else {
                                   debugPrint("Form is not valid");
                                 }

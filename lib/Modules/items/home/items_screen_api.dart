@@ -123,7 +123,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget _buildProductTitle() {
     return Text(
       widget.productList.title ?? '',
-      style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(),
+      style: AppTheme.lightTheme.textTheme.titleMedium,
     );
   }
 

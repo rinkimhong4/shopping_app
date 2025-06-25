@@ -104,8 +104,8 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            product.title ?? 'Product Title',
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            product.title ?? '',
+            style: AppTheme.lightTheme.textTheme.titleMedium,
           ),
           SizedBox(height: 10),
           _buildRating(),
@@ -170,7 +170,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                 'Description',
                 style: AppTheme.lightTheme.textTheme.titleSmall,
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14),
               Text(
                 product.description ?? 'No description available',
                 style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
