@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class ClothingFilterPopupFake extends StatefulWidget {
   final Product product;
   final int initialQuantity;
+
   const ClothingFilterPopupFake({
     super.key,
     required this.product,
@@ -23,6 +25,8 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
   Color? selectedColor;
   late int quantity;
   bool isFavorite = false;
+  final themeController = Get.find<ThemeController>();
+
   final colorNames = {
     Colors.black: 'Black',
     Colors.white: 'White',
@@ -51,25 +55,26 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
   String calculateDiscountPercentage(String? price, String? discount) {
     final priceValue = double.tryParse(price ?? '0.0') ?? 0.0;
     final discountValue = double.tryParse(discount ?? '0.0') ?? 0.0;
-    if (priceValue == 0.0) return '0.0';
-    final percentage = (discountValue / priceValue) * 100;
+    if (priceValue + discountValue == 0.0) return '0.0';
+    final percentage = (discountValue / (priceValue + discountValue)) * 100;
     return percentage.toStringAsFixed(1);
   }
 
   @override
   Widget build(BuildContext context) {
-    final originalPrice = double.tryParse(widget.product.price ?? '0.0') ?? 0.0;
+    final price = double.tryParse(widget.product.price ?? '0.0') ?? 0.0;
     final discount = double.tryParse(widget.product.discount ?? '0.0') ?? 0.0;
-    final discountedPrice = originalPrice;
+    final originalPrice = price + discount;
+    final totalPrice = price * quantity;
+    final totalOriginalPrice = originalPrice * quantity;
     final discountPercentage = calculateDiscountPercentage(
       widget.product.price,
       widget.product.discount,
     );
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(25),
       ),
       child: Column(
@@ -80,7 +85,10 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -88,7 +96,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +110,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                   fit: BoxFit.cover,
                   errorWidget:
                       (context, url, error) =>
-                          const Icon(Icons.error, size: 100),
+                          Icon(Icons.error, size: 100, color: AppColors.error),
                 ),
               ),
               const SizedBox(width: 16),
@@ -112,8 +120,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                   children: [
                     Text(
                       widget.product.title ?? 'Product Name',
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -122,25 +129,37 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                       Row(
                         children: [
                           Text(
-                            '\$${discountedPrice.toStringAsFixed(2)}',
-                            style: AppTheme.lightTheme.textTheme.bodyLarge
-                                ?.copyWith(color: AppColors.primary),
+                            '\$${totalPrice.toStringAsFixed(2)}',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '\$${totalOriginalPrice.toStringAsFixed(2)}',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(
+                              decoration: TextDecoration.lineThrough,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             '($discountPercentage% off)',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: Colors.red,
+                              color: AppColors.error,
                             ),
                           ),
                         ],
                       )
                     else
                       Text(
-                        '\$${originalPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 18,
+                        '\$${totalOriginalPrice.toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -152,7 +171,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
           _buildSectionTitle(
             'Choose your size${selectedSize != null ? ': $selectedSize' : ''}',
@@ -164,27 +183,27 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                   return ChoiceChip(
                     elevation: 0,
                     label: Text(size),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).cardColor,
                     selected: selectedSize == size,
                     showCheckmark: false,
-                    selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                    selectedColor: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                       side: BorderSide(
                         color:
                             selectedSize == size
-                                ? AppColors.primary
-                                : AppColors.textSecondary.withValues(
-                                  alpha: 0.3,
-                                ),
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(context).dividerColor,
                         width: 1,
                       ),
                     ),
                     labelStyle: TextStyle(
                       color:
                           selectedSize == size
-                              ? AppColors.primary
-                              : Colors.black,
+                              ? Theme.of(context).primaryColor
+                              : Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                     onSelected: (selected) {
                       setState(() {
@@ -214,7 +233,9 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                       });
                     },
                     child: CircleAvatar(
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.5),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.5),
                       radius: 19,
                       child: CircleAvatar(
                         backgroundColor: color,
@@ -238,7 +259,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CounterWidget(
-                initialCount: widget.initialQuantity, // Pass initial quantity
+                initialCount: widget.initialQuantity,
                 onCountChanged: (count) {
                   setState(() {
                     quantity = count;
@@ -256,15 +277,14 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: AppColors.primary,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: _applyFilters,
-              child: const Text(
+              child: Text(
                 'Add to Cart',
-                style: TextStyle(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).cardColor,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
                 ),
               ),
             ),
@@ -279,7 +299,9 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -302,14 +324,14 @@ class CounterWidget extends StatefulWidget {
 }
 
 class _CounterWidgetState extends State<CounterWidget> {
-  late int count;
   bool isAddHovered = false;
   bool isRemoveHovered = false;
+  late int count;
 
   @override
   void initState() {
     super.initState();
-    count = widget.initialCount; // Initialize from prop
+    count = widget.initialCount;
   }
 
   void increment() {
@@ -343,11 +365,17 @@ class _CounterWidgetState extends State<CounterWidget> {
             decoration: BoxDecoration(
               border: Border.all(
                 width: 1,
-                color: AppColors.primary.withValues(alpha: 0.4),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
               ),
               borderRadius: BorderRadius.circular(widget.borderRadius),
             ),
-            child: const Center(child: Icon(Icons.remove, size: 18)),
+            child: Center(
+              child: Icon(
+                Icons.remove,
+                size: 18,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 10),
@@ -357,14 +385,13 @@ class _CounterWidgetState extends State<CounterWidget> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: AppColors.primary,
+            color: Theme.of(context).primaryColor,
           ),
           child: Text(
             '$count',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).cardColor,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -379,11 +406,17 @@ class _CounterWidgetState extends State<CounterWidget> {
             decoration: BoxDecoration(
               border: Border.all(
                 width: 1,
-                color: AppColors.primary.withValues(alpha: 0.4),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
               ),
               borderRadius: BorderRadius.circular(widget.borderRadius),
             ),
-            child: const Center(child: Icon(Icons.add, size: 18)),
+            child: Center(
+              child: Icon(
+                Icons.add,
+                size: 18,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
           ),
         ),
         if (count > 1) ...[
@@ -398,7 +431,7 @@ class _CounterWidgetState extends State<CounterWidget> {
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: AppColors.primary,
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

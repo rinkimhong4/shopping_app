@@ -6,6 +6,8 @@ A Flutter project for a simple shopping application.
 
 This repository contains the source code for a Flutter-based shopping app. To run the project:
 
+When change profile picture need to refreshed app
+
 1. Ensure you have [Flutter installed](https://docs.flutter.dev/get-started/install).
 2. Clone this repository.
 3. Run `flutter pub get` to fetch dependencies.

@@ -24,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _goToNextPage() {
     currentSlideImage < onBoardScreenData.length - 1
         ? _pageController.nextPage(
-          duration: Duration(milliseconds: 100),
+          duration: Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         )
         : Get.offNamed(AppRoute.login);
@@ -36,81 +36,63 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   get _buildBody {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 20,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: onBoardScreenData.length,
-                onPageChanged: (value) {
-                  setState(() {
-                    currentSlideImage = value;
-                  });
-                },
-                itemBuilder:
-                    (context, index) => OnboardContent(
-                      imageSlider: onBoardScreenData[index]["imageSlider"],
-                      title: onBoardScreenData[index]["title"],
-                      subTitle: onBoardScreenData[index]["subTitle"],
-                    ),
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            flex: 20,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: onBoardScreenData.length,
+              onPageChanged: (value) {
+                setState(() {
+                  currentSlideImage = value;
+                });
+              },
+              itemBuilder:
+                  (context, index) => OnboardContent(
+                    imageSlider: onBoardScreenData[index]["imageSlider"],
+                    title: onBoardScreenData[index]["title"],
+                    subTitle: onBoardScreenData[index]["subTitle"],
+                  ),
+            ),
+          ),
+          SizedBox(height: 14),
+          DotsIndicator(
+            dotsCount: onBoardScreenData.length,
+            position: currentSlideImage.toDouble(),
+            decorator: DotsDecorator(
+              activeColor: const Color(0xFF22A45D),
+              color: Colors.grey.withValues(alpha: 0.5),
+              size: Size.square(9),
+              activeSize: Size(19, 9),
+              activeShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
               ),
             ),
-            SizedBox(height: 14),
-            DotsIndicator(
-              dotsCount: onBoardScreenData.length,
-              position: currentSlideImage.toDouble(),
-              decorator: DotsDecorator(
-                activeColor: Color(0xFF22A45D),
-                color: Colors.grey.withValues(alpha: 0.5),
-                size: Size.square(9),
-                activeSize: Size(19, 9),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
-            ),
-            SizedBox(height: 24),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 24),
-            //   child:
-            //       currentSlideImage == onBoardScreenData.length - 1
-            //           ? ElevatedButton(
-            //             onPressed: _goToNextPage,
-            //             style: AppTheme.lightTheme.elevatedButtonTheme.style!,
-            //             child: Text("Get Started".toUpperCase()),
-            //           )
-            //           : ElevatedButton(
-            //             onPressed: _goToNextPage,
-            //             style: AppTheme.lightTheme.elevatedButtonTheme.style!,
-            //             child: Text("Next".toUpperCase()),
-            //           ),
-            // ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: ElevatedButton(
-                onPressed: _goToNextPage,
-                style: AppTheme.lightTheme.elevatedButtonTheme.style!.copyWith(
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
+          ),
+          SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: ElevatedButton(
+              onPressed: _goToNextPage,
+              style: AppTheme.lightTheme.elevatedButtonTheme.style!.copyWith(
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32),
                   ),
                 ),
-                child: Text(
-                  (currentSlideImage == onBoardScreenData.length - 1
-                          ? "Get Started"
-                          : "Next")
-                      .toUpperCase(),
-                ),
+              ),
+              child: Text(
+                (currentSlideImage == onBoardScreenData.length - 1
+                        ? "Get Started"
+                        : "Next")
+                    .toUpperCase(),
               ),
             ),
-            Spacer(),
-          ],
-        ),
+          ),
+          const Spacer(),
+        ],
       ),
     );
   }
@@ -118,22 +100,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 List<Map<String, dynamic>> onBoardScreenData = [
   {
-    "imageSlider":
-        "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "imageSlider": "assets/images/image1.avif",
     "title": "Discover the Latest Trends",
     "subTitle":
         "Shop the newest arrivals and stay stylish\nwith our exclusive clothing collection.",
   },
   {
-    "imageSlider":
-        "https://plus.unsplash.com/premium_photo-1708110920881-635419c3411f?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "imageSlider": "assets/images/image2.avif",
     "title": "Exclusive Offers",
     "subTitle":
         "Enjoy special discounts and free shipping\non your favorite fashion items.",
   },
   {
-    "imageSlider":
-        "https://images.unsplash.com/photo-1601762603339-fd61e28b698a?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "imageSlider": "assets/images/image3.avif",
     "title": "Find Your Style",
     "subTitle":
         "Browse a wide range of clothing and accessories\nto match your unique taste.",

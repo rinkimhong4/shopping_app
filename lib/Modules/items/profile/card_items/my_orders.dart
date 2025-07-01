@@ -6,11 +6,11 @@ class MyOrdersItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Orders')),
+      appBar: AppBar(title: Text('My Orders')),
       body: Center(
         child: Text(
           'My Orders Items',
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
       ),
     );

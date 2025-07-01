@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +6,8 @@ import 'package:like_button/like_button.dart';
 import 'package:shopping_app/widgets/filter_screen_non_api.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:get/get.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class DetainScreenNonAPI extends StatefulWidget {
   final Product product;
@@ -17,11 +20,12 @@ class DetainScreenNonAPI extends StatefulWidget {
 class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
   int quantity = 1;
   bool isFavorite = false;
+  final themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).cardColor,
       appBar: _buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -34,26 +38,30 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.accent,
-      leading: const BackButton(color: Colors.black),
+      backgroundColor: Theme.of(context).cardColor,
+      leading: BackButton(color: Theme.of(context).iconTheme.color),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 24),
           child: LikeButton(
             size: 30,
-            circleColor: const CircleColor(
-              start: Color(0xff00ddff),
-              end: Color(0xff0099cc),
+            circleColor: CircleColor(
+              start: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+              end: Theme.of(context).primaryColor,
             ),
-            bubblesColor: const BubblesColor(
+            bubblesColor: BubblesColor(
               dotPrimaryColor: Colors.pink,
-              dotSecondaryColor: Colors.white,
+              dotSecondaryColor: Theme.of(context).cardColor,
             ),
             likeBuilder: (bool isLiked) {
               return Icon(
                 Icons.favorite,
                 color:
-                    isLiked ? Colors.red : Colors.grey.withValues(alpha: 0.5),
+                    isLiked
+                        ? Colors.red
+                        : Theme.of(
+                          context,
+                        ).iconTheme.color?.withValues(alpha: 0.5),
                 size: 30,
               );
             },
@@ -76,18 +84,24 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
         ? CachedNetworkImage(
           imageUrl: imageUrl,
           placeholder:
-              (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
+              (context, url) => Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
           errorWidget:
-              (context, url, error) => const Icon(Icons.error, size: 50),
+              (context, url, error) =>
+                  Icon(Icons.error, size: 50, color: AppColors.error),
           fit: BoxFit.cover,
           height: 400,
           width: double.infinity,
         )
-        : const Center(
+        : Center(
           child: Text(
             'No image available',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).hintColor,
+            ),
           ),
         );
   }
@@ -103,27 +117,43 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            product.title ?? '',
-            style: AppTheme.lightTheme.textTheme.titleMedium,
+          FadeInRight(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              product.title ?? '',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
-          SizedBox(height: 10),
-          _buildRating(),
-          SizedBox(height: 10),
-          if (product.brand != null) ...[
-            SizedBox(height: 8),
+          const SizedBox(height: 10),
+          FadeInRight(
+            duration: const Duration(milliseconds: 400),
+            child: _buildRating(),
+          ),
+          const SizedBox(height: 10),
+          if (product.brand?.name != null &&
+              product.brand!.name!.isNotEmpty) ...[
+            const SizedBox(height: 8),
             Row(
               children: [
-                Text(
-                  'Brand: ',
-                  style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                Text(
-                  product.brand.toString().split('.').last,
-                  style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                    color: AppColors.textPrimary,
+                FadeInRight(
+                  duration: const Duration(milliseconds: 500),
+                  child: Row(
+                    children: [
+                      if (product.brand?.logo != null) const SizedBox.shrink(),
+                      Text(
+                        'Brand: ',
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: Theme.of(context).hintColor),
+                      ),
+                      Text(
+                        product.brand!.name!,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -132,53 +162,74 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
           const SizedBox(height: 14),
           Row(
             children: [
-              Text(
-                '\$${price.toStringAsFixed(2)}',
-                style: AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.primary,
+              FadeInRight(
+                duration: const Duration(milliseconds: 600),
+                child: Text(
+                  '\$${price.toStringAsFixed(2)}',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (discount > 0) ...[
-                const SizedBox(width: 10),
-                Text(
-                  '\$${originalPrice.toStringAsFixed(2)}',
-                  style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                    decoration: TextDecoration.lineThrough,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  '${calculateDiscountPercentage(product.price, product.discount)}% OFF',
-                  style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ],
+              FadeInRight(
+                duration: const Duration(milliseconds: 600),
+                child:
+                    discount > 0
+                        ? Row(
+                          children: [
+                            const SizedBox(width: 10),
+                            Text(
+                              '\$${originalPrice.toStringAsFixed(2)}',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                decoration: TextDecoration.lineThrough,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${calculateDiscountPercentage(product.price, product.discount)}% OFF',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: AppColors.error),
+                            ),
+                          ],
+                        )
+                        : const SizedBox.shrink(),
+              ),
             ],
           ),
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Description',
-                style: AppTheme.lightTheme.textTheme.titleSmall,
-              ),
-              SizedBox(height: 14),
-              Text(
-                product.description ?? 'No description available',
-                style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.5,
+              FadeInRight(
+                duration: const Duration(milliseconds: 650),
+                child: Text(
+                  'Description',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 38),
+              const SizedBox(height: 14),
+              FadeInRight(
+                duration: const Duration(milliseconds: 650),
+                child: Text(
+                  product.description ?? 'No description available',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).hintColor,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 38),
               _buildActionButtons(context),
             ],
           ),
@@ -203,14 +254,14 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
         const SizedBox(width: 10),
         Text(
           (double.tryParse(product.rate ?? '0.0')?.toStringAsFixed(1)) ?? '0.0',
-          style: AppTheme.lightTheme.textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(width: 14),
         Text(
           '(No reviews)',
-          style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Theme.of(context).hintColor),
         ),
       ],
     );
@@ -223,19 +274,19 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
           height: 56,
           width: 56,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: Theme.of(context).dividerColor),
             borderRadius: BorderRadius.circular(12),
           ),
           child: LikeButton(
             size: 24,
             isLiked: isFavorite,
-            circleColor: const CircleColor(
-              start: Color(0xff00ddff),
-              end: Color(0xff0099cc),
+            circleColor: CircleColor(
+              start: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+              end: Theme.of(context).primaryColor,
             ),
-            bubblesColor: const BubblesColor(
+            bubblesColor: BubblesColor(
               dotPrimaryColor: Colors.pink,
-              dotSecondaryColor: Colors.white,
+              dotSecondaryColor: Theme.of(context).cardColor,
             ),
             likeBuilder: (bool isLiked) {
               return SvgPicture.asset(
@@ -243,7 +294,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                     ? 'assets/icons/bag-fill.svg'
                     : 'assets/icons/bag-outline.svg',
                 colorFilter: ColorFilter.mode(
-                  isLiked ? AppColors.error : AppColors.primary,
+                  isLiked ? AppColors.error : Theme.of(context).primaryColor,
                   BlendMode.srcIn,
                 ),
                 width: 28,
@@ -258,14 +309,14 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
             },
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Expanded(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               shadowColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(vertical: 16),
               elevation: 0,
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -290,7 +341,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
             },
             child: Text(
               'Add to Cart',
-              style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

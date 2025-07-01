@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +6,8 @@ import 'package:like_button/like_button.dart';
 import 'package:shopping_app/widgets/filter_screen.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:get/get.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class DetailScreen extends StatefulWidget {
   final TShirtModel productList;
@@ -18,6 +21,7 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   int quantity = 1;
   bool isFavorite = false;
+  final themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,7 @@ class _DetailScreenState extends State<DetailScreen> {
     final Rating? rating = widget.productList.rating;
     return Scaffold(
       appBar: _buildAppBar(),
-      backgroundColor: AppColors.accent,
+      backgroundColor: Theme.of(context).cardColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,26 +44,30 @@ class _DetailScreenState extends State<DetailScreen> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.accent,
-      leading: const BackButton(color: Colors.black),
+      backgroundColor: Theme.of(context).cardColor,
+      leading: BackButton(color: Theme.of(context).iconTheme.color),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 24),
           child: LikeButton(
             size: 30,
-            circleColor: const CircleColor(
-              start: Color(0xff00ddff),
-              end: Color(0xff0099cc),
+            circleColor: CircleColor(
+              start: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+              end: Theme.of(context).primaryColor,
             ),
-            bubblesColor: const BubblesColor(
+            bubblesColor: BubblesColor(
               dotPrimaryColor: Colors.pink,
-              dotSecondaryColor: Colors.white,
+              dotSecondaryColor: Theme.of(context).cardColor,
             ),
             likeBuilder: (bool isLiked) {
               return Icon(
                 Icons.favorite,
                 color:
-                    isLiked ? Colors.red : Colors.grey.withValues(alpha: 0.5),
+                    isLiked
+                        ? Colors.red
+                        : Theme.of(
+                          context,
+                        ).iconTheme.color?.withValues(alpha: 0.5),
                 size: 30,
               );
             },
@@ -83,11 +91,17 @@ class _DetailScreenState extends State<DetailScreen> {
       width: double.infinity,
       fit: BoxFit.cover,
       placeholder:
-          (context, url) =>
-              const Center(child: CircularProgressIndicator.adaptive()),
+          (context, url) => Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
       errorWidget:
-          (context, url, error) =>
-              Icon(Icons.error, size: 50, color: AppColors.error),
+          (context, url, error) => Icon(
+            Icons.error,
+            size: 50,
+            color: AppColors.error, // Keep error color consistent
+          ),
     );
   }
 
@@ -101,16 +115,25 @@ class _DetailScreenState extends State<DetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProductTitle(),
+          FadeInRight(
+            duration: Duration(milliseconds: 300),
+            child: _buildProductTitle(),
+          ),
           SizedBox(height: 10),
-          if (rating != null) _buildRating(rating),
+          FadeInRight(
+            duration: Duration(milliseconds: 400),
+            child: rating != null ? _buildRating(rating) : SizedBox(),
+          ),
           SizedBox(height: 14),
-          _buildPrice(price),
+          FadeInRight(
+            duration: Duration(milliseconds: 400),
+            child: _buildPrice(price),
+          ),
           SizedBox(height: 16),
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
           _buildProductDescription(),
           SizedBox(height: 32),
@@ -123,7 +146,9 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget _buildProductTitle() {
     return Text(
       widget.productList.title ?? '',
-      style: AppTheme.lightTheme.textTheme.titleMedium,
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
@@ -134,14 +159,14 @@ class _DetailScreenState extends State<DetailScreen> {
         SizedBox(width: 10),
         Text(
           rating.rate?.toStringAsFixed(1) ?? '0.0',
-          style: AppTheme.lightTheme.textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         SizedBox(width: 14),
         Text(
           '(${rating.count ?? 0} reviews)',
-          style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Theme.of(context).hintColor),
         ),
       ],
     );
@@ -159,30 +184,31 @@ class _DetailScreenState extends State<DetailScreen> {
           children: [
             Text(
               '\$${discountedPrice.toStringAsFixed(2)}',
-              style: AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
-                color: AppColors.primary,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(width: 10),
             Text(
               '\$${originalPrice.toStringAsFixed(2)}',
-              style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 decoration: TextDecoration.lineThrough,
-                color: AppColors.textSecondary,
+                color: Theme.of(context).hintColor,
               ),
             ),
             SizedBox(width: 10),
             Text(
               '$discountPercentage% OFF',
-              style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.error,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.error, // Keep error color consistent
               ),
             ),
           ],
         )
         : Text(
           '\$${originalPrice.toStringAsFixed(2)}',
-          style: AppTheme.lightTheme.textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleLarge,
         );
   }
 
@@ -190,13 +216,24 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Description', style: AppTheme.lightTheme.textTheme.titleSmall),
+        FadeInRight(
+          duration: Duration(milliseconds: 500),
+          child: Text(
+            'Description',
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
         SizedBox(height: 14),
-        Text(
-          widget.productList.description ?? 'No description available',
-          style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.5,
+        FadeInRight(
+          duration: Duration(milliseconds: 550),
+          child: Text(
+            widget.productList.description ?? 'No description available',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).hintColor,
+              height: 1.5,
+            ),
           ),
         ),
       ],
@@ -210,19 +247,19 @@ class _DetailScreenState extends State<DetailScreen> {
           height: 56,
           width: 56,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: Theme.of(context).dividerColor),
             borderRadius: BorderRadius.circular(12),
           ),
           child: LikeButton(
             size: 24,
             isLiked: isFavorite,
-            circleColor: const CircleColor(
-              start: Color(0xff00ddff),
-              end: Color(0xff0099cc),
+            circleColor: CircleColor(
+              start: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+              end: Theme.of(context).primaryColor,
             ),
-            bubblesColor: const BubblesColor(
+            bubblesColor: BubblesColor(
               dotPrimaryColor: Colors.pink,
-              dotSecondaryColor: Colors.white,
+              dotSecondaryColor: Theme.of(context).cardColor,
             ),
             likeBuilder: (bool isLiked) {
               return SvgPicture.asset(
@@ -230,7 +267,10 @@ class _DetailScreenState extends State<DetailScreen> {
                     ? 'assets/icons/bag-fill.svg'
                     : 'assets/icons/bag-outline.svg',
                 colorFilter: ColorFilter.mode(
-                  isLiked ? AppColors.error : AppColors.primary,
+                  isLiked
+                      ? AppColors
+                          .error // Keep error color consistent
+                      : Theme.of(context).primaryColor,
                   BlendMode.srcIn,
                 ),
                 width: 28,
@@ -252,7 +292,7 @@ class _DetailScreenState extends State<DetailScreen> {
               shadowColor: Colors.transparent,
               padding: const EdgeInsets.symmetric(vertical: 16),
               elevation: 0,
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -269,7 +309,7 @@ class _DetailScreenState extends State<DetailScreen> {
             },
             child: Text(
               'Add to Cart',
-              style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

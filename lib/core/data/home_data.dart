@@ -41,7 +41,11 @@ class HomeDataSlider {
         "title": "Sustainable Materials",
         "price": "100.00",
         "discount": "20.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -54,7 +58,11 @@ class HomeDataSlider {
         "title": "Fleece Sweatpants",
         "price": "98.00",
         "discount": "28.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -67,7 +75,11 @@ class HomeDataSlider {
         "title": "Nike 24.7",
         "price": "46.00",
         "discount": "33.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -80,7 +92,11 @@ class HomeDataSlider {
         "title": "Sustainable Materials",
         "price": "90.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -93,7 +109,11 @@ class HomeDataSlider {
         "title": "Nike Sportswear",
         "price": "45.00",
         "discount": "9.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -106,7 +126,11 @@ class HomeDataSlider {
         "title": "Sustainable Materials",
         "price": "50.00",
         "discount": "6.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -119,7 +143,11 @@ class HomeDataSlider {
         "title": "Sustainable Materials",
         "price": "99.95",
         "discount": "28.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -132,7 +160,11 @@ class HomeDataSlider {
         "title": "Nike Sportswear Essential",
         "price": "67.00",
         "discount": "23.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -145,7 +177,11 @@ class HomeDataSlider {
         "title": "Nike Sportswear",
         "price": "98.00",
         "discount": "23.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -158,7 +194,11 @@ class HomeDataSlider {
         "title": "Men's Carpenter Pants",
         "price": "84.00",
         "discount": "12.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -171,7 +211,11 @@ class HomeDataSlider {
         "title": "Sustainable Materials",
         "price": "71.00",
         "discount": "10.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -184,7 +228,11 @@ class HomeDataSlider {
         "title": "Women's Dri-FIT High-Waisted",
         "price": "40.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -197,7 +245,11 @@ class HomeDataSlider {
         "title": "Men's Flow Shorts",
         "price": "167.00",
         "discount": "10.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -210,7 +262,11 @@ class HomeDataSlider {
         "title": "Men's Fleece Cargo Pants",
         "price": "197.00",
         "discount": "30.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -223,7 +279,11 @@ class HomeDataSlider {
         "title": "Men's Pullover Fleece Hoodie",
         "price": "97.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -236,7 +296,11 @@ class HomeDataSlider {
         "title": "Men's Oversized French Terry Pullover Hoodie",
         "price": "60.00",
         "discount": "20.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -249,7 +313,11 @@ class HomeDataSlider {
         "title": "Men's Joggers",
         "price": "60.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -262,7 +330,11 @@ class HomeDataSlider {
         "title": "Woven Long-Sleeve Skate Top",
         "price": "110.00",
         "discount": "40.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -275,7 +347,11 @@ class HomeDataSlider {
         "title": "Woven Long-Sleeve Skate Top",
         "price": "105.98",
         "discount": "150.00",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -288,7 +364,11 @@ class HomeDataSlider {
         "title": "Own The Run Shorts",
         "price": "35.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -301,7 +381,11 @@ class HomeDataSlider {
         "title": "Max90 T-Shirt",
         "price": "90.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "1.4",
         "description":
@@ -314,7 +398,11 @@ class HomeDataSlider {
         "title": "Dri-FIT Woven Short-Sleeve Bowler Shirt",
         "price": "75.00",
         "discount": "",
-        "brand": "Nike",
+        "brand": {
+          "name": "Nike",
+          "logo":
+              "https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-svg-vector.svg",
+        },
         "category": "",
         "rate": "2.4",
         "description":
@@ -327,7 +415,11 @@ class HomeDataSlider {
         "title": "Newcastle United FC 24/25 Home Jersey",
         "price": "45.00",
         "discount": "10.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -340,7 +432,11 @@ class HomeDataSlider {
         "title": "Adicolor Baggy Fit Firebird Track Pants",
         "price": "85.00",
         "discount": "30.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -353,7 +449,11 @@ class HomeDataSlider {
         "title": "Adicolor Classics SST Track Jacket",
         "price": "85.00",
         "discount": "20.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -366,7 +466,11 @@ class HomeDataSlider {
         "title": "adidas 20th Century Fox Disney Hoodie",
         "price": "85.00",
         "discount": "",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -379,7 +483,11 @@ class HomeDataSlider {
         "title": "adidas 20th Century Fox Disney Tee Oversized",
         "price": "55.00",
         "discount": "",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -392,7 +500,11 @@ class HomeDataSlider {
         "title": "adidas Originals Wide Leg Pants",
         "price": "85.00",
         "discount": "25.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -405,7 +517,11 @@ class HomeDataSlider {
         "title": "Adicolor Denim Firebird Shorts",
         "price": "75.00",
         "discount": "5.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -418,7 +534,11 @@ class HomeDataSlider {
         "title": "Premium Sweatshirt",
         "price": "140.00",
         "discount": "",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":
@@ -431,7 +551,28 @@ class HomeDataSlider {
         "title": "Adicolor Classics Firebird Track Jacket",
         "price": "90.00",
         "discount": "40.00",
-        "brand": "Adidas",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
+        "category": "",
+        "rate": "3.4",
+        "description":
+            "A black Firebird track jacket from Adidas Adicolor, offering iconic style and a sporty fit.",
+      },
+      {
+        "id": 32,
+        "image":
+            "https://assets.adidas.com/images/h_2000,f_auto,q_auto,fl_lossy,c_fill,g_auto/deb746e58ba5421786a739513ee17356_9366/Adicolor_Classics_Firebird_Track_Jacket_Black_JY1347_21_model.jpg",
+        "title": "Adicolor Classics Firebird Track Jacket",
+        "price": "90.00",
+        "discount": "40.00",
+        "brand": {
+          "name": "Adidas",
+          "logo":
+              "https://logos-world.net/wp-content/uploads/2020/04/Adidas-Logo-1991-present.jpg",
+        },
         "category": "",
         "rate": "3.4",
         "description":

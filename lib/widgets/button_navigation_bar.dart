@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
-import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:get/get.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class ButtonNavigationWidget extends StatefulWidget {
   final void Function(int)? onTap;
@@ -16,6 +17,7 @@ class ButtonNavigationWidget extends StatefulWidget {
 
 class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
   int _selectedIndex = 0;
+  final themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -27,9 +29,7 @@ class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
     setState(() {
       _selectedIndex = index;
     });
-    if (widget.onTap != null) {
-      widget.onTap!(index);
-    }
+    widget.onTap?.call(index);
   }
 
   @override
@@ -52,6 +52,7 @@ class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
         label: 'Profile',
       ),
     ];
+
     return Stack(
       children: [
         ClipRRect(
@@ -60,8 +61,8 @@ class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
             child: Container(
               height: 75,
               decoration: BoxDecoration(
-                color: Colors.white70,
-                borderRadius: BorderRadius.only(
+                color: Theme.of(context).cardColor,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
                 ),
@@ -69,34 +70,38 @@ class _ButtonNavigationWidgetState extends State<ButtonNavigationWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(iconList.length, (index) {
+                  final isSelected = _selectedIndex == index;
+                  final iconColor =
+                      isSelected
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).hintColor;
+                  final textColor =
+                      isSelected
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).hintColor;
+
                   return GestureDetector(
                     onTap: () => _onItemTapped(index),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SvgPicture.asset(
-                          _selectedIndex == index
+                          isSelected
                               ? iconList[index].filled
                               : iconList[index].outlined,
                           colorFilter: ColorFilter.mode(
-                            _selectedIndex == index
-                                ? AppColors.primary
-                                : AppColors.textSecondary,
+                            iconColor,
                             BlendMode.srcIn,
                           ),
                           width: 24,
                           height: 24,
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text(
                           iconList[index].label,
-                          style: AppTheme.lightTheme.textTheme.labelSmall
-                              ?.copyWith(
-                                color:
-                                    _selectedIndex == index
-                                        ? AppColors.primary
-                                        : AppColors.textSecondary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(color: textColor),
                         ),
                       ],
                     ),

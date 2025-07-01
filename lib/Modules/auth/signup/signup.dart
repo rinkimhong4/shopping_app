@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/Modules/Home/controller/auth_controller.dart';
@@ -15,8 +17,10 @@ class _SignupScreenState extends State<SignupScreen> {
   final controller = Get.find<AuthController>();
   final _formKeySignup = GlobalKey<FormState>();
   bool pwdVisibility = false;
+  bool CPwdVisibility = false;
   final ScrollController scrollController = ScrollController();
   bool isScrolled = false;
+  String? _serverError; // Store server-side error for email field
 
   @override
   void initState() {
@@ -34,6 +38,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Color get appBarColor =>
       isScrolled ? AppColors.primary : AppColors.background;
   Color get colorArrowBack => isScrolled ? AppColors.accent : AppColors.primary;
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -54,6 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
             onPressed: () {
               controller.emailCtrl.clear();
               controller.passwordCtrl.clear();
+              controller.confPasswordCtrl.clear();
               Get.offAndToNamed(AppRoute.login);
             },
           ),
@@ -71,14 +77,13 @@ class _SignupScreenState extends State<SignupScreen> {
           centerTitle: true,
         ),
         backgroundColor: AppColors.background,
-        body: Container(child: _buildBody),
+        body: _buildBody,
       ),
     );
   }
 
-  get _buildBody {
+  Widget get _buildBody {
     List<Map<String, dynamic>> socialMediaLogins = [
-      // {"icon": Icons.apple, "label": "Continue with Apple"},
       {"icon": Icons.email, "label": "Continue with Email"},
       {"icon": Icons.facebook, "label": "Continue with Facebook"},
     ];
@@ -98,14 +103,14 @@ class _SignupScreenState extends State<SignupScreen> {
                   color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 "Sign up to start shopping and manage your orders.",
                 style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
-              SizedBox(height: 58),
+              const SizedBox(height: 58),
               Form(
                 key: _formKeySignup,
                 child: Focus(
@@ -116,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           // Email TextField
                           TextFormField(
+                            autocorrect: false,
                             controller: controller.emailCtrl,
                             decoration: InputDecoration(
                               labelText: "Email",
@@ -153,26 +159,48 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
+                              errorStyle: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
                             ),
-                            validator: controller.validateEmail,
-                            style: TextStyle(color: AppColors.textPrimary),
+                            validator: (value) {
+                              final clientError = controller.validateEmail(
+                                value,
+                              );
+                              if (clientError != null) return clientError;
+                              if (_serverError != null) return _serverError;
+                              return null;
+                            },
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                            ),
+                            onChanged: (value) {
+                              if (_serverError != null) {
+                                setState(() {
+                                  _serverError = null;
+                                });
+                                _formKeySignup.currentState!.validate();
+                              }
+                            },
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           // Password TextField
                           TextFormField(
+                            autocorrect: false,
                             controller: controller.passwordCtrl,
                             obscureText: !pwdVisibility,
                             decoration: InputDecoration(
@@ -197,7 +225,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         : AppColors.textSecondary,
                               ),
                               suffixIcon: Padding(
-                                padding: const EdgeInsets.only(right: 14),
+                                padding: EdgeInsets.only(right: 14),
                                 child: InkWell(
                                   onTap:
                                       () => setState(
@@ -229,28 +257,35 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
+                              errorStyle: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
                             ),
                             validator: controller.validatePassword,
-                            style: TextStyle(color: AppColors.textPrimary),
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           // Confirm Password TextField
                           TextFormField(
+                            autocorrect: false,
                             controller: controller.confPasswordCtrl,
-                            obscureText: !pwdVisibility,
+                            obscureText: !CPwdVisibility,
                             decoration: InputDecoration(
                               labelText: "Confirm Password",
                               hintText: "Confirm Password",
@@ -277,10 +312,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                 child: InkWell(
                                   onTap:
                                       () => setState(
-                                        () => pwdVisibility = !pwdVisibility,
+                                        () => CPwdVisibility = !CPwdVisibility,
                                       ),
                                   child: Icon(
-                                    pwdVisibility
+                                    CPwdVisibility
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
                                     color:
@@ -305,79 +340,98 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(32),
                               ),
-                            ),
-                            validator: controller.validateConfirmPassword,
-                            style: TextStyle(color: AppColors.textPrimary),
-                          ),
-                          SizedBox(height: 8),
-                          // TextButton for Forgot Password
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                // Navigate to Forgot Password Screen
-                              },
-                              child: Text(
-                                "Forgot Password?",
-                                style: AppTheme.lightTheme.textTheme.labelSmall
-                                    ?.copyWith(color: AppColors.primary),
+                              errorStyle: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
                               ),
                             ),
+                            validator: controller.validateConfirmPassword,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                          SizedBox(height: 24),
-                          // Sign In Button
+                          SizedBox(height: 50),
+                          // Sign Up Button
                           SizedBox(
                             width: Get.width,
                             height: 58,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
+                            child: Obx(
+                              () => ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  overlayColor: AppColors.accent.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  foregroundColor:
+                                      controller.isLoading.value
+                                          ? AppColors.accent.withValues(
+                                            alpha: 0.5,
+                                          )
+                                          : AppColors.accent,
                                 ),
-                                overlayColor: AppColors.accent.withValues(
-                                  alpha: 0.1,
-                                ),
-                              ),
-                              onPressed: () async {
-                                if (_formKeySignup.currentState!.validate()) {
-                                  await controller.signUp(
-                                    controller.emailCtrl.text.trim(),
-                                    controller.passwordCtrl.text.trim(),
-                                  );
-                                  if (controller.currentUser != null) {
-                                    controller.emailCtrl.clear();
-                                    controller.passwordCtrl.clear();
-                                    controller.confPasswordCtrl.clear();
+                                onPressed: () async {
+                                  setState(() {
+                                    _serverError = null;
+                                  });
+                                  if (_formKeySignup.currentState!.validate()) {
+                                    final error = await controller.signUp(
+                                      controller.emailCtrl.text.trim(),
+                                      controller.passwordCtrl.text.trim(),
+                                    );
+                                    if (error != null) {
+                                      setState(() {
+                                        _serverError = error;
+                                      });
+                                      _formKeySignup.currentState!.validate();
+                                    } else {
+                                      controller.emailCtrl.clear();
+                                      controller.passwordCtrl.clear();
+                                      controller.confPasswordCtrl.clear();
+                                    }
                                   }
-                                } else {
-                                  debugPrint("Form is not valid");
-                                }
-                              },
-                              // onPressed:
-                              //     () => controller.submitCommand(context),
-                              child: Text(
-                                'Sign Up',
-                                style: AppTheme.lightTheme.textTheme.bodyMedium
-                                    ?.copyWith(color: AppColors.accent),
+                                },
+                                child:
+                                    controller.isLoading.value
+                                        ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.accent,
+                                          ),
+                                        )
+                                        : Text(
+                                          'Sign Up',
+                                          style: AppTheme
+                                              .lightTheme
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AppColors.accent,
+                                              ),
+                                        ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
+                          // Divider with "or Login with" text
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -412,59 +466,69 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           // Social Media Login Buttons
                           Column(
-                            spacing: 24,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
                                 socialMediaLogins.map((social) {
-                                  return ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      overlayColor: AppColors.primary,
-                                      minimumSize: Size(double.infinity, 54),
-                                      elevation: 0,
-                                      backgroundColor: AppColors.background,
-                                      side: BorderSide(
-                                        color: AppColors.primary.withValues(
-                                          alpha: 0.6,
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 24),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        overlayColor: AppColors.primary,
+                                        minimumSize: const Size(
+                                          double.infinity,
+                                          54,
                                         ),
-                                        width: 1,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 80,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      //
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          social['icon'],
-                                          color: AppColors.primary,
-                                          size: 24,
+                                        elevation: 0,
+                                        backgroundColor: AppColors.background,
+                                        side: BorderSide(
+                                          color: AppColors.primary.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                          width: 1,
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          social['label'],
-                                          style: AppTheme
-                                              .lightTheme
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: AppColors.primary,
-                                              ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            32,
+                                          ),
                                         ),
-                                      ],
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 80,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        // Handle social login
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            social['icon'],
+                                            color: AppColors.primary,
+                                            size: 24,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            social['label'],
+                                            style: AppTheme
+                                                .lightTheme
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: AppColors.primary,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 }).toList(),
                           ),
-                          SizedBox(height: 65),
+                          const SizedBox(height: 65),
+                          // Sign In Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -473,7 +537,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 style: AppTheme.lightTheme.textTheme.labelSmall
                                     ?.copyWith(color: AppColors.textSecondary),
                               ),
-                              SizedBox(width: 4),
+                              const SizedBox(width: 4),
                               TextButton(
                                 onPressed: () {
                                   controller.emailCtrl.clear();

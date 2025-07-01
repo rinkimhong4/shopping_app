@@ -60,19 +60,17 @@ class Product {
     this.description,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()),
-      image: json['image']?.toString(),
-      title: json['title']?.toString(),
-      price: json['price']?.toString(),
-      discount: json['discount']?.toString(),
-      brand: json['brand'] != null ? brandValues.map[json['brand']] : null,
-      category: json['category']?.toString(),
-      rate: json['rate']?.toString(),
-      description: json['description']?.toString(),
-    );
-  }
+  factory Product.fromJson(Map<String, dynamic> json) => Product(
+    id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()),
+    image: json['image']?.toString(),
+    title: json['title']?.toString(),
+    price: json['price']?.toString(),
+    discount: json['discount']?.toString(),
+    brand: json['brand'] != null ? Brand.fromJson(json['brand']) : null,
+    category: json['category']?.toString(),
+    rate: json['rate']?.toString(),
+    description: json['description']?.toString(),
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -80,25 +78,21 @@ class Product {
     'title': title,
     'price': price,
     'discount': discount,
-    'brand': brand != null ? brandValues.reverse[brand] : null,
+    'brand': brand?.toJson(),
     'category': category,
     'rate': rate,
     'description': description,
   };
 }
 
-enum Brand { NIKE, ADIDAS }
+class Brand {
+  String? name;
+  String? logo;
 
-final brandValues = EnumValues({'Nike': Brand.NIKE, 'Adidas': Brand.ADIDAS});
+  Brand({this.name, this.logo});
 
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
+  factory Brand.fromJson(Map<String, dynamic> json) =>
+      Brand(name: json['name']?.toString(), logo: json['logo']?.toString());
 
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
+  Map<String, dynamic> toJson() => {'name': name, 'logo': logo};
 }

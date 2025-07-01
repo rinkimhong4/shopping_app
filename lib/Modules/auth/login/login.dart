@@ -12,12 +12,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // final controller = Get.put(AuthController());
   final controller = Get.find<AuthController>();
   final _formKeyLogin = GlobalKey<FormState>();
   bool pwdVisibility = false;
-  final ScrollController scrollController = ScrollController();
   bool isScrolled = false;
+  String? _serverError;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Color get appBarColor =>
       isScrolled ? AppColors.primary : AppColors.background;
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -63,14 +64,13 @@ class _LoginScreenState extends State<LoginScreen> {
           centerTitle: true,
         ),
         backgroundColor: AppColors.background,
-        body: Container(child: _buildBody),
+        body: _buildBody,
       ),
     );
   }
 
-  get _buildBody {
+  Widget get _buildBody {
     List<Map<String, dynamic>> socialMediaLogins = [
-      // {"icon": Icons.apple, "label": "Continue with Apple"},
       {"icon": Icons.email, "label": "Continue with Email"},
       {"icon": Icons.facebook, "label": "Continue with Facebook"},
     ];
@@ -90,14 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 "Login to your account to continue shopping and manage your orders.",
                 style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
-              SizedBox(height: 58),
+              const SizedBox(height: 58),
               Form(
                 key: _formKeyLogin,
                 child: Focus(
@@ -108,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           // Email TextField
                           TextFormField(
+                            autocorrect: false,
                             controller: controller.emailCtrl,
                             decoration: InputDecoration(
                               labelText: "Email",
@@ -120,18 +121,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelStyle: TextStyle(
                                 color:
                                     hasFocus
-                                        ? AppColors.primary
-                                        : AppColors.textPrimary,
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
                               ),
                               prefixIcon: Icon(
                                 Icons.email_outlined,
                                 color:
                                     hasFocus
-                                        ? AppColors.primary
+                                        ? AppColors.textPrimary
                                         : AppColors.textSecondary,
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                                 borderSide: BorderSide(
                                   color: AppColors.textPrimary.withValues(
                                     alpha: 0.6,
@@ -139,32 +140,41 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                                 borderSide: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                               ),
                             ),
                             validator: controller.validateEmail,
                             style: TextStyle(color: AppColors.textPrimary),
+                            onChanged: (value) {
+                              if (_serverError != null) {
+                                setState(() {
+                                  _serverError = null;
+                                });
+                                _formKeyLogin.currentState!.validate();
+                              }
+                            },
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           // Password TextField
                           TextFormField(
+                            autocorrect: false,
                             controller: controller.passwordCtrl,
                             obscureText: !pwdVisibility,
                             decoration: InputDecoration(
@@ -178,18 +188,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelStyle: TextStyle(
                                 color:
                                     hasFocus
-                                        ? AppColors.primary
-                                        : AppColors.textPrimary,
+                                        ? AppColors.textPrimary
+                                        : AppColors.textSecondary,
                               ),
                               prefixIcon: Icon(
                                 Icons.lock_outline,
                                 color:
                                     hasFocus
-                                        ? AppColors.primary
+                                        ? AppColors.textPrimary
                                         : AppColors.textSecondary,
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                                 borderSide: BorderSide(
                                   color: AppColors.textPrimary.withValues(
                                     alpha: 0.6,
@@ -197,24 +207,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                                 borderSide: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: Colors.red,
                                   width: 1,
                                 ),
-                                borderRadius: BorderRadius.circular(32),
+                                borderRadius: BorderRadius.circular(40),
                               ),
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.only(right: 14),
@@ -235,11 +245,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            validator: controller.validatePassword,
+                            validator: (value) {
+                              final clientError = controller.validatePassword(
+                                value,
+                              );
+                              if (clientError != null) return clientError;
+                              if (_serverError != null) return _serverError;
+                              return null;
+                            },
                             style: TextStyle(color: AppColors.textPrimary),
+                            onChanged: (value) {
+                              if (_serverError != null) {
+                                setState(() {
+                                  _serverError = null;
+                                });
+                                _formKeyLogin.currentState!.validate();
+                              }
+                            },
                           ),
-                          SizedBox(height: 8),
-                          // TextButton for Forgot Password
+                          const SizedBox(height: 8),
+                          // Forgot Password
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
@@ -253,11 +278,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           // Sign In Button
                           SizedBox(
                             width: Get.width,
-                            height: 58,
+                            height: 52,
                             child: Obx(
                               () => ElevatedButton(
                                 style: ElevatedButton.styleFrom(
@@ -267,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   elevation: 0,
                                   backgroundColor: AppColors.primary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32),
+                                    borderRadius: BorderRadius.circular(40),
                                   ),
                                   foregroundColor:
                                       controller.isLoading.value
@@ -277,13 +302,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                           : AppColors.accent,
                                 ),
                                 onPressed: () async {
+                                  setState(() {
+                                    _serverError = null;
+                                  });
                                   if (_formKeyLogin.currentState!.validate()) {
-                                    await controller.signIn(
+                                    final error = await controller.signIn(
                                       controller.emailCtrl.text.trim(),
                                       controller.passwordCtrl.text,
                                     );
-                                    // Clear fields only if sign-in was successful
-                                    if (controller.currentUser != null) {
+                                    if (error != null) {
+                                      setState(() {
+                                        _serverError = error;
+                                      });
+                                      _formKeyLogin.currentState!.validate();
+                                    } else {
                                       controller.emailCtrl.clear();
                                       controller.passwordCtrl.clear();
                                     }
@@ -291,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 child:
                                     controller.isLoading.value
-                                        ? SizedBox(
+                                        ? const SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: CircularProgressIndicator(
@@ -312,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           // Divider with "or Login with" text
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -348,60 +380,69 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           // Social Media Login Buttons
                           Column(
-                            spacing: 24,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
                                 socialMediaLogins.map((social) {
-                                  return ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      overlayColor: AppColors.primary,
-                                      minimumSize: Size(double.infinity, 54),
-                                      elevation: 0,
-                                      backgroundColor: AppColors.background,
-                                      side: BorderSide(
-                                        color: AppColors.primary.withValues(
-                                          alpha: 0.6,
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 24),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        overlayColor: AppColors.primary,
+                                        minimumSize: const Size(
+                                          double.infinity,
+                                          54,
                                         ),
-                                        width: 1,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 80,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      //
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          social['icon'],
-                                          color: AppColors.primary,
-                                          size: 24,
+                                        elevation: 0,
+                                        backgroundColor: AppColors.background,
+                                        side: BorderSide(
+                                          color: AppColors.primary.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                          width: 1,
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          social['label'],
-                                          style: AppTheme
-                                              .lightTheme
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: AppColors.primary,
-                                              ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            32,
+                                          ),
                                         ),
-                                      ],
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 80,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        // Handle social login
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            social['icon'],
+                                            color: AppColors.primary,
+                                            size: 24,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            social['label'],
+                                            style: AppTheme
+                                                .lightTheme
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: AppColors.primary,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 }).toList(),
                           ),
-                          // Divider for Sign Up
-                          SizedBox(height: 130),
+                          // Sign Up
+                          const SizedBox(height: 130),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -410,7 +451,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: AppTheme.lightTheme.textTheme.labelSmall
                                     ?.copyWith(color: AppColors.textSecondary),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               TextButton(
                                 onPressed: () {
                                   controller.emailCtrl.clear();

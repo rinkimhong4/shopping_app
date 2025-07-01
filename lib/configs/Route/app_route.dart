@@ -7,7 +7,10 @@ import 'package:shopping_app/Modules/Home/Views/notifications/masnory_grid_view.
 import 'package:shopping_app/Modules/Home/Views/notifications/notification_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/profile/profile_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/search/search_screen.dart';
+import 'package:shopping_app/Modules/Home/binding/bag_binding.dart';
+import 'package:shopping_app/Modules/Home/binding/home_binding.dart';
 import 'package:shopping_app/Modules/Home/binding/profile_binding.dart';
+import 'package:shopping_app/Modules/Home/binding/search_binding.dart';
 import 'package:shopping_app/Modules/auth/login/login.dart';
 import 'package:shopping_app/Modules/auth/signup/signup.dart';
 import 'package:shopping_app/Modules/items/profile/card_items/my_orders.dart';
@@ -42,23 +45,27 @@ class AppRoute {
   static const String termCondition = '/termCondition';
   static const String myOrders = '/myOrders';
   static const String promoCode = '/promoCode';
+  // static const String otp = '/otp';
+  //
   // MasonryGridViewWidget
 
   static final pages = [
     GetPage(
       name: splash,
       page: () => SplashScreen(),
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
       transitionDuration: Duration(milliseconds: 500),
     ),
     GetPage(
       name: onboarding,
       page: () => OnboardingScreen(),
-      transition: Transition.fade,
+      // transition: Transition.rightToLeftWithFade,
+      // transitionDuration: Duration(seconds: 3),
     ),
     GetPage(
       name: home,
       page: () => HomeScreen(),
+      binding: HomeBinding(),
       transition: Transition.noTransition,
     ),
     GetPage(
@@ -71,15 +78,16 @@ class AppRoute {
       page: () => SignupScreen(),
       transition: Transition.noTransition,
     ),
-
     GetPage(
       name: bagScreen,
       page: () => BagScreen(),
+      binding: BagBinding(),
       transition: Transition.noTransition,
     ),
     GetPage(
       name: searchScreen,
       page: () => SearchScreen(),
+      binding: SearchBinding(),
       transition: Transition.noTransition,
     ),
     GetPage(
@@ -90,13 +98,13 @@ class AppRoute {
     ),
     GetPage(
       name: notification,
-      page: () => CustomLiquidPullToRefresh(),
+      page: () => NotificationsScreen(),
       // transition: Transition.noTransition,
       // binding: ProfileBinding(),
     ),
     GetPage(
       name: masonry,
-      page: () => MasonryGridViewWidget(),
+      page: () => BellScreenNewRelease(),
       // transition: Transition.noTransition,
       // binding: ProfileBinding(),
     ),
@@ -160,5 +168,17 @@ class AppRoute {
       // transition: Transition.noTransition,
       // binding: ProfileBinding(),
     ),
+    // GetPage(
+    //   name: otp,
+    //   page: () => OTPScreen(),
+    //   // transition: Transition.noTransition,
+    //   // binding: ProfileBinding(),
+    // ),
+    // GetPage(
+    //   name: newPassword,
+    //   page: () => NewPasswordScreen(),
+    //   // transition: Transition.noTransition,
+    //   // binding: ProfileBinding(),
+    // ),
   ];
 }

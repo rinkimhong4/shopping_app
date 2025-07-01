@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
@@ -19,6 +21,7 @@ class SearchScreen extends StatelessWidget {
           Get.offNamed(AppRoute.home);
           break;
         case 1:
+          // Already on Search Screen, do nothing
           break;
         case 2:
           Get.offNamed(AppRoute.bagScreen);
@@ -33,8 +36,8 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 209, 16, 16),
-      body: _buildBody(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: _buildBody(Get.context!),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,
         onTap: _onNavItemTapped,
@@ -42,16 +45,23 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarIconBrightness:
+                Theme.of(context).brightness == Brightness.dark
+                    ? Brightness.light
+                    : Brightness.dark,
+          ),
+
           automaticallyImplyLeading: false,
           expandedHeight: 40,
           flexibleSpace: FlexibleSpaceBar(
             title: Row(
               children: [
-                Text('Search', style: AppTheme.lightTheme.textTheme.titleLarge),
+                Text('Search', style: Theme.of(context).textTheme.titleLarge),
                 Text(
                   '.',
                   style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
@@ -62,13 +72,6 @@ class SearchScreen extends StatelessWidget {
             ),
             titlePadding: EdgeInsets.only(left: 24, bottom: 18),
             centerTitle: false,
-            background: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                height: 78,
-                decoration: BoxDecoration(color: Colors.white70),
-              ),
-            ),
           ),
           floating: false,
           pinned: true,
@@ -77,14 +80,16 @@ class SearchScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: SvgPicture.asset(
-                'assets/icons/search-outline.svg',
+                AppAssets.searchOutline,
                 width: 24,
                 height: 24,
-                colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).iconTheme.color ?? Colors.black,
+                  BlendMode.srcIn,
+                ),
               ),
               onPressed: () {},
             ),
-
             SizedBox(width: 14),
           ],
         ),

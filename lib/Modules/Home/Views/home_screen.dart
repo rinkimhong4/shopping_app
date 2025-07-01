@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_non_api.dart';
@@ -18,8 +20,9 @@ import 'package:shopping_app/widgets/timer.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
   final int _selectedIndex = 0;
+  final themeController = Get.find<ThemeController>();
 
   void _onNavItemTapped(int index) {
     switch (index) {
@@ -44,8 +47,8 @@ class HomeScreen extends GetView<HomeController> {
       controller.startAutoSlide(HomeDataSlider.bannerItems.length);
     });
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: _buildAppBar(context),
       body: _buildBody(),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,
@@ -54,20 +57,19 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildAppBar() {
+  _buildAppBar(BuildContext context) {
     return AppBar(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarIconBrightness:
+            Theme.of(context).brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
+      ),
       automaticallyImplyLeading: false,
       elevation: 0,
-      backgroundColor: AppColors.accent,
       title: Row(
         children: [
-          Text('HypeWear', style: AppTheme.lightTheme.textTheme.titleLarge),
-          Text(
-            '!',
-            style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-              color: AppColors.primary,
-            ),
-          ),
+          Text('HypeWear!', style: Theme.of(context).textTheme.titleLarge),
         ],
       ),
       actions: [
@@ -76,7 +78,10 @@ class HomeScreen extends GetView<HomeController> {
             AppAssets.chatCircle,
             width: 24,
             height: 24,
-            colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).iconTheme.color ?? Colors.black,
+              BlendMode.srcIn,
+            ),
           ),
           onPressed: () {
             Get.toNamed(AppRoute.notification);
@@ -87,7 +92,10 @@ class HomeScreen extends GetView<HomeController> {
             AppAssets.bell,
             width: 24,
             height: 24,
-            colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).iconTheme.color ?? Colors.black,
+              BlendMode.srcIn,
+            ),
           ),
           onPressed: () {
             Get.toNamed(AppRoute.masonry);
@@ -101,18 +109,30 @@ class HomeScreen extends GetView<HomeController> {
   Widget _buildBody() {
     return SmartRefresher(
       controller: controller.refreshController,
-      enablePullDown: true,
-      header: WaterDropHeader(waterDropColor: AppColors.primary),
+      header: WaterDropHeader(
+        waterDropColor: AppColors.primary,
+        complete: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check, color: AppColors.primary),
+            SizedBox(width: 14),
+            Text(
+              'Refresh complete',
+              style: TextStyle(color: AppColors.primary),
+            ),
+          ],
+        ),
+      ),
       onRefresh: controller.onRefresh,
       child: CustomScrollView(
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([
               _bannerSlider,
-              _buildHorizontalSlide,
+              _buildHorizontalSlide(Get.context!),
             ]),
           ),
-          _buildVerticalTitle,
+          _buildVerticalTitle(Get.context!),
           _popularProductsGrid,
         ],
       ),
@@ -156,20 +176,22 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             child: Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 50),
+                                padding: EdgeInsets.only(
+                                  top: 50,
+                                  left: 50,
+                                  right: 50,
+                                ),
                                 child: Column(
                                   spacing: 14,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
                                       bannerItems[index]['title']!,
-                                      style: AppTheme
-                                          .lightTheme
-                                          .textTheme
-                                          .headlineMedium
-                                          ?.copyWith(
-                                            color: AppColors.background,
-                                          ),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineMedium?.copyWith(
+                                        color: AppColors.background,
+                                      ),
                                     ),
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -185,12 +207,11 @@ class HomeScreen extends GetView<HomeController> {
                                             32,
                                           ),
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 60,
-                                        ),
                                       ),
                                       onPressed: () {
-                                        //
+                                        Get.offAndToNamed(
+                                          AppRoute.searchScreen,
+                                        );
                                       },
                                       child: Text(
                                         'Shop Now',
@@ -234,12 +255,12 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  get _buildHorizontalSlide {
+  _buildHorizontalSlide(BuildContext context) {
     final controller = Get.find<HomeController>();
     return Obx(
       () =>
           controller.isLoading.value
-              ? _buildHorizontalSlideShimmer()
+              ? _buildHorizontalSlideShimmer(Get.context!)
               : controller.tShirtModels.isEmpty
               ? Center(child: Text('No found'))
               : Column(
@@ -261,7 +282,7 @@ class HomeScreen extends GetView<HomeController> {
                           ),
                           child: Text(
                             'Selling Fast 🔥',
-                            style: AppTheme.lightTheme.textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                         CustomTimePicker(),
@@ -307,7 +328,7 @@ class HomeScreen extends GetView<HomeController> {
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.only(
-                                              top: 8.0,
+                                              top: 4,
                                             ),
                                             child: Text(
                                               tShirt.title ?? 'No Title',
@@ -323,45 +344,60 @@ class HomeScreen extends GetView<HomeController> {
                                           ),
                                         ),
                                       ),
-                                      Container(
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 0).toStringAsFixed(2)}',
-                                                style: AppTheme
-                                                    .lightTheme
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      color: AppColors.primary,
-                                                    ),
-                                                overflow: TextOverflow.ellipsis,
+                                      Expanded(
+                                        child: Container(
+                                          height: 20,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                  bottomLeft: Radius.circular(
+                                                    12,
+                                                  ),
+                                                  bottomRight: Radius.circular(
+                                                    12,
+                                                  ),
+                                                ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 0).toStringAsFixed(2)}',
+                                                  style: AppTheme
+                                                      .lightTheme
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
-                                                style: AppTheme
-                                                    .lightTheme
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      decoration:
-                                                          TextDecoration
-                                                              .lineThrough,
-                                                      color: AppColors.error,
-                                                    ),
-                                                overflow: TextOverflow.ellipsis,
+                                              Flexible(
+                                                child: Text(
+                                                  "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
+                                                  style: AppTheme
+                                                      .lightTheme
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: AppColors.error,
+                                                      ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -408,7 +444,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildHorizontalSlideShimmer() {
+  _buildHorizontalSlideShimmer(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -471,7 +507,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  get _buildVerticalTitle {
+  _buildVerticalTitle(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverList(
@@ -493,7 +529,7 @@ class HomeScreen extends GetView<HomeController> {
                     )
                     : Text(
                       'Popular Products',
-                      style: AppTheme.lightTheme.textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
           ),
           const SizedBox(height: 24),
@@ -507,7 +543,6 @@ class HomeScreen extends GetView<HomeController> {
     final bodyItems =
         HomeDataSlider.bodyItems['products'] as Set<Map<String, dynamic>>;
     final productsList = bodyItems.toList();
-
     return Obx(
       () =>
           controller.isLoading.value
@@ -574,8 +609,8 @@ class HomeScreen extends GetView<HomeController> {
                                     alignment: Alignment.center,
                                     child: Padding(
                                       padding: const EdgeInsets.only(
-                                        bottom: 8,
-                                        top: 8,
+                                        bottom: 4,
+                                        top: 4,
                                       ),
                                       child: Text(
                                         item['title'] != null &&
@@ -609,6 +644,7 @@ class HomeScreen extends GetView<HomeController> {
                                           padding: const EdgeInsets.only(
                                             left: 14,
                                             right: 4,
+                                            bottom: 6,
                                           ),
                                           child: Text(
                                             '\$${item['price'] ?? ''}',

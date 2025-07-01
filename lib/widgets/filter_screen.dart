@@ -1,8 +1,10 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
+import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class ClothingFilterPopup extends StatefulWidget {
   final TShirtModel product;
@@ -17,6 +19,7 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
   Color? selectedColor;
   int quantity = 1;
   RangeValues priceRange = RangeValues(0, 10);
+  final themeController = Get.find<ThemeController>();
 
   final colorNames = {
     Colors.black: 'Black',
@@ -43,12 +46,14 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
     final originalPrice = widget.product.price ?? 0.0;
     final discount = originalPrice * 0.45;
     final discountedPrice = originalPrice - discount;
-    final discountPercentage = (discount / originalPrice * 100).round();
+    final totalPrice = discountedPrice * quantity;
+    final discountPercentage =
+        originalPrice != 0 ? (discount / originalPrice * 100).round() : 0;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(25),
       ),
       child: Column(
@@ -60,7 +65,10 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: Icon(
+                  Icons.close,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -68,61 +76,79 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
-          // Product Info
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
-                  imageUrl: widget.product.image ?? '',
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  errorWidget:
-                      (context, url, error) => Icon(Icons.error, size: 100),
+              FadeInLeft(
+                duration: const Duration(milliseconds: 550),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.product.image ?? '',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    errorWidget:
+                        (context, url, error) => Icon(
+                          Icons.error,
+                          size: 100,
+                          color: AppColors.error,
+                        ),
+                  ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.product.title ?? 'Product Name',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    FadeInRight(
+                      duration: const Duration(milliseconds: 550),
+                      child: Text(
+                        widget.product.title ?? 'Product Name',
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    if (discountPercentage > 0)
-                      Row(
-                        children: [
-                          Text(
-                            '\$${discountedPrice.toStringAsFixed(2)}',
-                            style: AppTheme.lightTheme.textTheme.bodyLarge
-                                ?.copyWith(color: AppColors.primary),
-                          ),
-
-                          SizedBox(width: 10),
-                          Text(
-                            '($discountPercentage% OFF)',
-                            style: AppTheme.lightTheme.textTheme.bodySmall
-                                ?.copyWith(color: AppColors.error),
-                          ),
-                        ],
-                      )
-                    else
-                      Text(
-                        '\$${originalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    const SizedBox(height: 8),
+                    FadeInRight(
+                      duration: const Duration(milliseconds: 600),
+                      child:
+                          discountPercentage > 0
+                              ? Row(
+                                children: [
+                                  Text(
+                                    '\$${totalPrice.toStringAsFixed(2)}',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyLarge?.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    '\$${(originalPrice).toStringAsFixed(2)}',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
+                                      decoration: TextDecoration.lineThrough,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    '($discountPercentage% OFF)',
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(color: AppColors.error),
+                                  ),
+                                ],
+                              )
+                              : Text(
+                                '\$${(originalPrice * quantity).toStringAsFixed(2)}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                    ),
                   ],
                 ),
               ),
@@ -131,89 +157,103 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
           Divider(
             height: 30,
             thickness: 0.7,
-            color: AppColors.textSecondary.withValues(alpha: 0.2),
+            color: Theme.of(context).dividerColor,
           ),
-          _buildSectionTitle(
-            'Choose your size: ${selectedSize != null ? ': $selectedSize' : ''}',
+          FadeInLeft(
+            duration: const Duration(milliseconds: 550),
+            child: _buildSectionTitle(
+              'Choose your size${selectedSize != null ? ': $selectedSize' : ''}',
+            ),
           ),
-          Wrap(
-            spacing: 14,
-            children:
-                ['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) {
-                  return ChoiceChip(
-                    elevation: 0,
-                    label: Text(size),
-                    backgroundColor: Colors.white,
-                    selected: selectedSize == size,
-                    showCheckmark: false,
-                    selectedColor: AppColors.primary.withValues(alpha: 0.2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(
+          FadeInRight(
+            duration: const Duration(milliseconds: 550),
+            child: Wrap(
+              spacing: 14,
+              children:
+                  ['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) {
+                    return ChoiceChip(
+                      elevation: 0,
+                      label: Text(size),
+                      backgroundColor: Theme.of(context).cardColor,
+                      selected: selectedSize == size,
+                      showCheckmark: false,
+                      selectedColor: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color:
+                              selectedSize == size
+                                  ? Theme.of(context).primaryColor
+                                  : Theme.of(context).dividerColor,
+                          width: 1,
+                        ),
+                      ),
+                      labelStyle: TextStyle(
                         color:
                             selectedSize == size
-                                ? AppColors.primary
-                                : AppColors.textSecondary.withValues(
-                                  alpha: 0.3,
-                                ),
-                        width: 1,
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(context).textTheme.bodyMedium?.color,
                       ),
-                    ),
-                    labelStyle: TextStyle(
-                      color:
-                          selectedSize == size
-                              ? AppColors.primary
-                              : Colors.black,
-                    ),
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedSize = selected ? size : null;
-                      });
-                    },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    labelPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                  );
-                }).toList(),
+                      onSelected: (selected) {
+                        setState(() {
+                          selectedSize = selected ? size : null;
+                        });
+                      },
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      labelPadding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
+                    );
+                  }).toList(),
+            ),
           ),
-          SizedBox(height: 30),
-          _buildSectionTitle(
-            'Choose a Color: ${selectedColor != null ? ' ${colorNames[selectedColor]}' : ''}',
-          ),
-          Wrap(
-            spacing: 10,
-            children:
-                colorNames.keys.map((color) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedColor = color;
-                      });
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.5),
-                      radius: 19,
 
-                      child: CircleAvatar(
-                        backgroundColor: color,
-                        radius: 18,
-                        child:
-                            selectedColor == color
-                                ? Icon(
-                                  Icons.check,
-                                  size: 24,
-                                  color: Colors.white,
-                                )
-                                : null,
-                      ),
-                    ),
-                  );
-                }).toList(),
+          const SizedBox(height: 30),
+          FadeInLeft(
+            duration: const Duration(milliseconds: 600),
+            child: _buildSectionTitle(
+              'Choose a Color${selectedColor != null ? ': ${colorNames[selectedColor]}' : ''}',
+            ),
           ),
-          SizedBox(height: 30),
-          _buildSectionTitle('Quantity'),
+          FadeInRight(
+            duration: const Duration(milliseconds: 600),
+            child: Wrap(
+              spacing: 10,
+              children:
+                  colorNames.keys.map((color) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedColor = color;
+                        });
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.5),
+                        radius: 19,
+                        child: CircleAvatar(
+                          backgroundColor: color,
+                          radius: 18,
+                          child:
+                              selectedColor == color
+                                  ? Icon(
+                                    Icons.check,
+                                    size: 24,
+                                    color: Colors.white,
+                                  )
+                                  : null,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            ),
+          ),
+          const SizedBox(height: 30),
+          _buildSectionTitle('Quantity: $quantity'),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -226,7 +266,7 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
               ),
             ],
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -235,15 +275,13 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                backgroundColor: AppColors.primary,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: _applyFilters,
               child: Text(
                 'Add to Cart',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).cardColor,
                 ),
               ),
             ),
@@ -255,10 +293,12 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -267,9 +307,9 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
 class CounterWidget extends StatefulWidget {
   final double borderRadius;
   final ValueChanged<int>? onCountChanged;
-  TShirtModel? tShirtModel;
+  final TShirtModel? tShirtModel;
 
-  CounterWidget({
+  const CounterWidget({
     super.key,
     this.borderRadius = 100,
     this.onCountChanged,
@@ -316,71 +356,57 @@ class _CounterWidgetState extends State<CounterWidget> {
             decoration: BoxDecoration(
               border: Border.all(
                 width: 1,
-                color: AppColors.primary.withValues(alpha: 0.4),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
               ),
               borderRadius: BorderRadius.circular(widget.borderRadius),
             ),
-            child: Center(child: Icon(Icons.remove, size: 18)),
+            child: Center(
+              child: Icon(
+                Icons.remove,
+                size: 18,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Container(
           height: 44,
           width: 84,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: AppColors.primary,
+            color: Theme.of(context).primaryColor,
           ),
           child: Text(
             '$count',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).cardColor,
             ),
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         InkWell(
+          onHover: (hover) => setState(() => isAddHovered = hover),
           onTap: increment,
-          child: Row(
-            children: [
-              Container(
-                height: 44,
-                width: 44,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: AppColors.primary.withValues(alpha: 0.4),
-                  ),
-                  borderRadius: BorderRadius.circular(widget.borderRadius),
-                ),
-                child: Center(child: Icon(Icons.add, size: 18)),
+          child: Container(
+            height: 44,
+            width: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1,
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.4),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 18),
-                child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      count = 1;
-                    });
-                    count = 1;
-                  },
-                  child:
-                      count > 1
-                          ? Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                          : SizedBox(),
-                ),
+              borderRadius: BorderRadius.circular(widget.borderRadius),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.add,
+                size: 18,
+                color: Theme.of(context).iconTheme.color,
               ),
-            ],
+            ),
           ),
         ),
       ],

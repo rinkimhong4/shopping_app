@@ -6,6 +6,7 @@
     "dotenv",
     "fakestoreapi",
     "Getx",
+    "headlinemedium",
     "supabase"
   ]
 }

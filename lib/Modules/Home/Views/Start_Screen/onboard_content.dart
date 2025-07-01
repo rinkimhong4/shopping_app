@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 
@@ -18,31 +18,35 @@ class OnboardContent extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: CachedNetworkImage(
-              imageUrl: imageSlider!,
-              fit: BoxFit.cover,
-              imageBuilder:
-                  (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100),
-                      ),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              ),
+              child: Image.asset(
+                imageSlider!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
           ),
           SizedBox(height: 24),
-          Text(title!, style: AppTheme.lightTheme.textTheme.titleLarge),
+          FadeInRight(
+            duration: Duration(milliseconds: 500),
+            child: Text(
+              title!,
+              style: AppTheme.lightTheme.textTheme.titleLarge,
+            ),
+          ),
           SizedBox(height: 8),
-          Text(
-            subTitle!,
-            style: AppTheme.lightTheme.textTheme.labelSmall,
-            textAlign: TextAlign.center,
+          FadeInRight(
+            duration: Duration(milliseconds: 600),
+            child: Text(
+              subTitle!,
+              style: AppTheme.lightTheme.textTheme.labelSmall,
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

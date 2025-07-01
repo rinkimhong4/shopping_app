@@ -15,14 +15,14 @@ class LogOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const primaryColor = AppColors.error;
-    const double borderRadius = 14;
+    const double borderRadius = 12;
     return OutlinedButton(
       onPressed: onPressed,
       style: ButtonStyle(
         side: WidgetStateProperty.all(
           BorderSide(color: primaryColor, width: 1.1),
         ),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 12)),
+        padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 14)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
@@ -35,7 +35,7 @@ class LogOutButton extends StatelessWidget {
         children: [
           Text(
             text,
-            style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+            style: AppTheme.lightTheme.textTheme.titleSmall?.copyWith(
               color: primaryColor,
             ),
           ),
