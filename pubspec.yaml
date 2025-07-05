@@ -38,6 +38,10 @@ dependencies:
   flutter_slidable: ^4.0.0
   share_plus: ^11.0.0
   google_sign_in: ^7.0.0
+  flutter_neumorphic:
+    git:
+      url: https://github.com/den0206/Flutter-Neumorphic.git
+  connectivity_plus: ^6.1.4
 
 dev_dependencies:
   flutter_test:

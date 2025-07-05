@@ -42,7 +42,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
       leading: BackButton(color: Theme.of(context).iconTheme.color),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 24),
+          padding: EdgeInsets.only(right: 24),
           child: LikeButton(
             size: 30,
             circleColor: CircleColor(
@@ -81,24 +81,32 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
   Widget _buildProductImage() {
     final imageUrl = widget.product.image ?? '';
     return imageUrl.isNotEmpty
-        ? CachedNetworkImage(
-          imageUrl: imageUrl,
-          placeholder:
-              (context, url) => Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
+        ? Hero(
+          tag: 'product-image-${widget.product.id ?? imageUrl}',
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            placeholder:
+                (context, url) => Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-              ),
-          errorWidget:
-              (context, url, error) =>
-                  Icon(Icons.error, size: 50, color: AppColors.error),
-          fit: BoxFit.cover,
-          height: 400,
-          width: double.infinity,
+            errorWidget:
+                (context, url, error) => Icon(
+                  Icons.error,
+                  size: 50,
+                  color:
+                      AppColors
+                          .error, // Kept as is, consider Theme.of(context).colorScheme.error
+                ),
+            fit: BoxFit.cover,
+            height: 400,
+            width: double.infinity,
+          ),
         )
         : Center(
           child: Text(
-            'No image available',
+            'No Image Available',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).hintColor,
             ),
@@ -113,12 +121,12 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
     final originalPrice = price + discount;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FadeInRight(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: 300),
             child: Text(
               product.title ?? '',
               style: Theme.of(
@@ -126,22 +134,22 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           FadeInRight(
-            duration: const Duration(milliseconds: 400),
+            duration: Duration(milliseconds: 400),
             child: _buildRating(),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           if (product.brand?.name != null &&
               product.brand!.name!.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Row(
               children: [
                 FadeInRight(
-                  duration: const Duration(milliseconds: 500),
+                  duration: Duration(milliseconds: 500),
                   child: Row(
                     children: [
-                      if (product.brand?.logo != null) const SizedBox.shrink(),
+                      if (product.brand?.logo != null) SizedBox.shrink(),
                       Text(
                         'Brand: ',
                         style: Theme.of(context).textTheme.labelMedium
@@ -159,11 +167,11 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
               ],
             ),
           ],
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           Row(
             children: [
               FadeInRight(
-                duration: const Duration(milliseconds: 600),
+                duration: Duration(milliseconds: 600),
                 child: Text(
                   '\$${price.toStringAsFixed(2)}',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -173,12 +181,12 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                 ),
               ),
               FadeInRight(
-                duration: const Duration(milliseconds: 600),
+                duration: Duration(milliseconds: 600),
                 child:
                     discount > 0
                         ? Row(
                           children: [
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10),
                             Text(
                               '\$${originalPrice.toStringAsFixed(2)}',
                               style: Theme.of(
@@ -188,7 +196,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                                 color: Theme.of(context).hintColor,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10),
                             Text(
                               '${calculateDiscountPercentage(product.price, product.discount)}% OFF',
                               style: Theme.of(context).textTheme.bodyMedium
@@ -196,7 +204,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                             ),
                           ],
                         )
-                        : const SizedBox.shrink(),
+                        : SizedBox.shrink(),
               ),
             ],
           ),
@@ -205,12 +213,12 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
             thickness: 0.7,
             color: Theme.of(context).dividerColor,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FadeInRight(
-                duration: const Duration(milliseconds: 650),
+                duration: Duration(milliseconds: 650),
                 child: Text(
                   'Description',
                   style: Theme.of(
@@ -218,9 +226,9 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                   ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14),
               FadeInRight(
-                duration: const Duration(milliseconds: 650),
+                duration: Duration(milliseconds: 650),
                 child: Text(
                   product.description ?? 'No description available',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -229,7 +237,7 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                   ),
                 ),
               ),
-              const SizedBox(height: 38),
+              SizedBox(height: 38),
               _buildActionButtons(context),
             ],
           ),
@@ -250,13 +258,13 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
     final product = widget.product;
     return Row(
       children: [
-        const Icon(Icons.star, color: Colors.amber, size: 20),
-        const SizedBox(width: 10),
+        Icon(Icons.star, color: Colors.amber, size: 20),
+        SizedBox(width: 10),
         Text(
           (double.tryParse(product.rate ?? '0.0')?.toStringAsFixed(1)) ?? '0.0',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 14),
         Text(
           '(No reviews)',
           style: Theme.of(
@@ -309,12 +317,12 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
             },
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10),
         Expanded(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               shadowColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: 16),
               elevation: 0,
               backgroundColor: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(

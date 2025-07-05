@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -9,7 +8,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';
-import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -67,9 +65,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           backgroundColor: Theme.of(context).cardColor,
           title: Text(
             'Notifications',
-            style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).textTheme.titleLarge?.color,
-            ),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           actions: [
             IconButton(
@@ -101,9 +97,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   ? Center(
                     child: Text(
                       'No notifications available',
-                      style: AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   )
                   : ListView.builder(
@@ -112,103 +106,222 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     controller: _scrollController,
                     itemBuilder: (context, index) {
                       final item = controller.tShirtModels[index];
-                      return Slidable(
-                        endActionPane: ActionPane(
-                          motion: ScrollMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) {},
-                              backgroundColor: Theme.of(context).primaryColor,
-                              foregroundColor: Colors.white,
-                              icon: Icons.share_outlined,
-                              label: 'Share',
-                            ),
-                          ],
-                        ),
-                        key: ValueKey(item.id),
-                        startActionPane: ActionPane(
-                          motion: ScrollMotion(),
-                          dismissible: DismissiblePane(
-                            onDismissed: () {
-                              controller.tShirtModels.removeAt(index);
-                            },
-                          ),
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) {
-                                controller.tShirtModels.removeAt(index);
-                              },
-                              backgroundColor: AppColors.error,
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: 'Delete',
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            Get.to(() => DetailScreen(productList: item));
-                          },
-                          key: Key(item.id.toString()),
-                          minVerticalPadding: 10,
-                          isThreeLine: true,
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 40,
-                            child: CachedNetworkImage(
-                              imageUrl: item.image ?? '',
-                              placeholder:
-                                  (context, url) =>
-                                      CircularProgressIndicator.adaptive(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Theme.of(context).primaryColor,
-                                            ),
+                      return ListTile(
+                        onTap: () {
+                          Get.to(() => DetailScreen(productList: item));
+                        },
+                        key: Key(item.id.toString()),
+                        minVerticalPadding: 10,
+                        isThreeLine: true,
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          radius: 40,
+                          child: CachedNetworkImage(
+                            imageUrl: item.image ?? '',
+                            placeholder:
+                                (context, url) =>
+                                    CircularProgressIndicator.adaptive(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Theme.of(context).primaryColor,
                                       ),
-                              errorWidget:
-                                  (context, url, error) =>
-                                      Icon(Icons.error, color: AppColors.error),
-                            ),
-                          ),
-                          title: Text(
-                            item.title ?? 'No Name',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTheme.lightTheme.textTheme.titleMedium
-                                ?.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium?.color,
+                                    ),
+                            errorWidget:
+                                (context, url, error) => Icon(
+                                  Icons.error,
+                                  color: Theme.of(context).colorScheme.error,
                                 ),
                           ),
-                          horizontalTitleGap: 14,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
+                        ),
+                        title: Text(
+                          item.title ?? 'No Name',
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        horizontalTitleGap: 14,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        subtitle: Text(
+                          item.description ?? 'No description',
+                          style: Theme.of(context).textTheme.bodySmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).iconTheme.color,
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          subtitle: Text(
-                            item.description ?? 'No description',
-                            style: AppTheme.lightTheme.textTheme.bodyMedium
-                                ?.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium?.color,
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16),
                                 ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Text(
-                            '\$${item.price?.toStringAsFixed(2) ?? '0.00'}',
-                            style: AppTheme.lightTheme.textTheme.bodyLarge
-                                ?.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                          ),
+                              ),
+                              builder:
+                                  (context) => Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 14,
+                                      left: 14,
+                                      right: 14,
+                                      bottom: 24,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              height: 72,
+                                              width: 72,
+                                              decoration: BoxDecoration(
+                                                image:
+                                                    (item.image != null &&
+                                                            item
+                                                                .image!
+                                                                .isNotEmpty)
+                                                        ? DecorationImage(
+                                                          image:
+                                                              CachedNetworkImageProvider(
+                                                                item.image!,
+                                                              ),
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                        : null,
+                                                shape: BoxShape.circle,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color
+                                                    ?.withValues(alpha: 0.1),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              item.title ?? '',
+                                              textAlign: TextAlign.center,
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
+                                            ),
+                                            SizedBox(height: 14),
+                                          ],
+                                        ),
+                                        ListTile(
+                                          leading: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color
+                                                  ?.withValues(alpha: 0.1),
+                                            ),
+                                            child: Icon(
+                                              Icons.remove_from_queue,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).iconTheme.color,
+                                              size: 24,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            'Delete this notification',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.titleSmall,
+                                          ),
+                                          onTap: () {
+                                            controller.tShirtModels.removeAt(
+                                              index,
+                                            );
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color
+                                                  ?.withValues(alpha: 0.1),
+                                            ),
+                                            child: Icon(
+                                              Icons.share_outlined,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).iconTheme.color,
+                                              size: 24,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            'Share',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.titleSmall,
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            // Placeholder for share action
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color
+                                                  ?.withValues(alpha: 0.1),
+                                            ),
+                                            child: Icon(
+                                              Icons.add_shopping_cart,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).iconTheme.color,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            'Add to cart',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.titleSmall,
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            // Placeholder for add to cart action
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                            );
+                          },
                         ),
                       );
                     },
@@ -221,10 +334,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget _buildShimmerLoading(BuildContext context) {
     return ListView.separated(
       padding: EdgeInsets.all(8),
-      itemCount: 6,
+      itemCount: 10,
       separatorBuilder: (context, index) => SizedBox(height: 8),
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
+          direction: ShimmerDirection.rtl,
           baseColor: Theme.of(context).hoverColor,
           highlightColor: Theme.of(context).highlightColor,
           child: ListTile(

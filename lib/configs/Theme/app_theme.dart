@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   // Light theme colors
@@ -26,7 +27,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.background,
     primaryColor: AppColors.primary,
     cardColor: AppColors.card,
-    fontFamily: 'Poppins',
+    fontFamily: GoogleFonts.inter().fontFamily,
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.background,
       elevation: 0,

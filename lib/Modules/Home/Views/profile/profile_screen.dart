@@ -159,10 +159,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else if (imagePath.isNotEmpty) {
       if (isNetwork) {
         profileImageWidget = CircleAvatar(
-          radius: 56,
-          backgroundColor: Theme.of(context).cardColor,
-          backgroundImage: NetworkImage(imagePath),
-          onBackgroundImageError: (_, __) => debugPrint("Network image error"),
+          radius: 60,
+          backgroundColor: Theme.of(context).primaryColor,
+          child: CircleAvatar(
+            radius: 58,
+            backgroundColor: Theme.of(context).cardColor,
+            backgroundImage: NetworkImage(imagePath),
+            onBackgroundImageError:
+                (_, __) => debugPrint("Network image error"),
+          ),
         );
       } else {
         final file = File(imagePath);
@@ -215,12 +220,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                 },
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  height: 40,
+                  width: 40,
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).cardColor,
+                      width: 2,
+                    ),
                   ),
-                  child: Icon(Icons.edit, color: Colors.white, size: 18),
+                  child: Icon(
+                    Icons.camera_alt_outlined,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
             ),
@@ -376,6 +390,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             trailing: Switch.adaptive(
               value: themeController.isDarkMode.value,
               activeColor: Theme.of(context).primaryColor,
+              thumbIcon: WidgetStateProperty.resolveWith<Icon?>((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return Icon(
+                    Icons.dark_mode,
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    size: 20,
+                  );
+                }
+                return Icon(
+                  Icons.light_mode,
+                  color:
+                      Theme.of(context).textTheme.bodySmall?.color ??
+                      Colors.grey,
+                  size: 20,
+                );
+              }),
               onChanged: (bool value) {
                 themeController.toggleTheme();
               },

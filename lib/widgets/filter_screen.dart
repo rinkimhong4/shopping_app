@@ -1,4 +1,3 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -81,22 +80,16 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FadeInLeft(
-                duration: const Duration(milliseconds: 550),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: CachedNetworkImage(
-                    imageUrl: widget.product.image ?? '',
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
-                    errorWidget:
-                        (context, url, error) => Icon(
-                          Icons.error,
-                          size: 100,
-                          color: AppColors.error,
-                        ),
-                  ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: widget.product.image ?? '',
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                  errorWidget:
+                      (context, url, error) =>
+                          Icon(Icons.error, size: 100, color: AppColors.error),
                 ),
               ),
               const SizedBox(width: 16),
@@ -104,51 +97,44 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FadeInRight(
-                      duration: const Duration(milliseconds: 550),
-                      child: Text(
-                        widget.product.title ?? 'Product Name',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                    Text(
+                      widget.product.title ?? 'Product Name',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 8),
-                    FadeInRight(
-                      duration: const Duration(milliseconds: 600),
-                      child:
-                          discountPercentage > 0
-                              ? Row(
-                                children: [
-                                  Text(
-                                    '\$${totalPrice.toStringAsFixed(2)}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge?.copyWith(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    '\$${(originalPrice).toStringAsFixed(2)}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall?.copyWith(
-                                      decoration: TextDecoration.lineThrough,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    '($discountPercentage% OFF)',
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(color: AppColors.error),
-                                  ),
-                                ],
-                              )
-                              : Text(
-                                '\$${(originalPrice * quantity).toStringAsFixed(2)}',
-                                style: Theme.of(context).textTheme.bodyMedium,
+                    discountPercentage > 0
+                        ? Row(
+                          children: [
+                            Text(
+                              '\$${totalPrice.toStringAsFixed(2)}',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge?.copyWith(
+                                color: Theme.of(context).primaryColor,
                               ),
-                    ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '\$${(originalPrice).toStringAsFixed(2)}',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                decoration: TextDecoration.lineThrough,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '($discountPercentage% OFF)',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppColors.error),
+                            ),
+                          ],
+                        )
+                        : Text(
+                          '\$${(originalPrice * quantity).toStringAsFixed(2)}',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                   ],
                 ),
               ),
@@ -159,98 +145,86 @@ class _ClothingFilterPopupState extends State<ClothingFilterPopup> {
             thickness: 0.7,
             color: Theme.of(context).dividerColor,
           ),
-          FadeInLeft(
-            duration: const Duration(milliseconds: 550),
-            child: _buildSectionTitle(
-              'Choose your size${selectedSize != null ? ': $selectedSize' : ''}',
-            ),
+          _buildSectionTitle(
+            'Choose your size${selectedSize != null ? ': $selectedSize' : ''}',
           ),
-          FadeInRight(
-            duration: const Duration(milliseconds: 550),
-            child: Wrap(
-              spacing: 14,
-              children:
-                  ['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) {
-                    return ChoiceChip(
-                      elevation: 0,
-                      label: Text(size),
-                      backgroundColor: Theme.of(context).cardColor,
-                      selected: selectedSize == size,
-                      showCheckmark: false,
-                      selectedColor: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(
-                          color:
-                              selectedSize == size
-                                  ? Theme.of(context).primaryColor
-                                  : Theme.of(context).dividerColor,
-                          width: 1,
-                        ),
-                      ),
-                      labelStyle: TextStyle(
+          Wrap(
+            spacing: 14,
+            children:
+                ['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) {
+                  return ChoiceChip(
+                    elevation: 0,
+                    label: Text(size),
+                    backgroundColor: Theme.of(context).cardColor,
+                    selected: selectedSize == size,
+                    showCheckmark: false,
+                    selectedColor: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
                         color:
                             selectedSize == size
                                 ? Theme.of(context).primaryColor
-                                : Theme.of(context).textTheme.bodyMedium?.color,
+                                : Theme.of(context).dividerColor,
+                        width: 1,
                       ),
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedSize = selected ? size : null;
-                        });
-                      },
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      labelPadding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
-                    );
-                  }).toList(),
-            ),
+                    ),
+                    labelStyle: TextStyle(
+                      color:
+                          selectedSize == size
+                              ? Theme.of(context).primaryColor
+                              : Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
+                    onSelected: (selected) {
+                      setState(() {
+                        selectedSize = selected ? size : null;
+                      });
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    labelPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
+                  );
+                }).toList(),
           ),
 
           const SizedBox(height: 30),
-          FadeInLeft(
-            duration: const Duration(milliseconds: 600),
-            child: _buildSectionTitle(
-              'Choose a Color${selectedColor != null ? ': ${colorNames[selectedColor]}' : ''}',
-            ),
+          _buildSectionTitle(
+            'Choose a Color${selectedColor != null ? ': ${colorNames[selectedColor]}' : ''}',
           ),
-          FadeInRight(
-            duration: const Duration(milliseconds: 600),
-            child: Wrap(
-              spacing: 10,
-              children:
-                  colorNames.keys.map((color) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedColor = color;
-                        });
-                      },
+          Wrap(
+            spacing: 10,
+            children:
+                colorNames.keys.map((color) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedColor = color;
+                      });
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.5),
+                      radius: 19,
                       child: CircleAvatar(
-                        backgroundColor: Theme.of(
-                          context,
-                        ).primaryColor.withValues(alpha: 0.5),
-                        radius: 19,
-                        child: CircleAvatar(
-                          backgroundColor: color,
-                          radius: 18,
-                          child:
-                              selectedColor == color
-                                  ? Icon(
-                                    Icons.check,
-                                    size: 24,
-                                    color: Colors.white,
-                                  )
-                                  : null,
-                        ),
+                        backgroundColor: color,
+                        radius: 18,
+                        child:
+                            selectedColor == color
+                                ? Icon(
+                                  Icons.check,
+                                  size: 24,
+                                  color: Colors.white,
+                                )
+                                : null,
                       ),
-                    );
-                  }).toList(),
-            ),
+                    ),
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 30),
           _buildSectionTitle('Quantity: $quantity'),

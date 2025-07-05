@@ -85,23 +85,27 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Widget _buildProductImage() {
-    return CachedNetworkImage(
-      imageUrl: widget.productList.image ?? '',
-      height: 400,
-      width: double.infinity,
-      fit: BoxFit.cover,
-      placeholder:
-          (context, url) => Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
+    return Hero(
+      transitionOnUserGestures: true,
+      tag: 'product-${widget.productList.id ?? widget.productList.image}',
+      child: CachedNetworkImage(
+        imageUrl: widget.productList.image ?? '',
+        height: 400,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        placeholder:
+            (context, url) => Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
             ),
-          ),
-      errorWidget:
-          (context, url, error) => Icon(
-            Icons.error,
-            size: 50,
-            color: AppColors.error, // Keep error color consistent
-          ),
+        errorWidget:
+            (context, url, error) => Icon(
+              Icons.error,
+              size: 50,
+              color: AppColors.error, // Keep error color consistent
+            ),
+      ),
     );
   }
 

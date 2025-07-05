@@ -3,7 +3,7 @@ import 'package:shopping_app/Modules/Home/Views/Start_Screen/onboarding_screen.d
 import 'package:shopping_app/Modules/Home/Views/Start_Screen/splash_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/bag/bag_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/home_screen.dart';
-import 'package:shopping_app/Modules/Home/Views/notifications/masnory_grid_view.dart';
+import 'package:shopping_app/Modules/Home/Views/notifications/screen_new_release.dart';
 import 'package:shopping_app/Modules/Home/Views/notifications/notification_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/profile/profile_screen.dart';
 import 'package:shopping_app/Modules/Home/Views/search/search_screen.dart';
@@ -15,6 +15,7 @@ import 'package:shopping_app/Modules/auth/login/login.dart';
 import 'package:shopping_app/Modules/auth/signup/signup.dart';
 import 'package:shopping_app/Modules/items/profile/card_items/my_orders.dart';
 import 'package:shopping_app/Modules/items/profile/card_items/promo_code.dart';
+import 'package:shopping_app/Modules/items/profile/general_setting_profile/change_pwd.dart';
 import 'package:shopping_app/Modules/items/profile/general_setting_profile/my_account.dart';
 import 'package:shopping_app/Modules/items/profile/general_setting_profile/my_address.dart';
 import 'package:shopping_app/Modules/items/profile/general_setting_profile/my_notification.dart';
@@ -45,7 +46,10 @@ class AppRoute {
   static const String termCondition = '/termCondition';
   static const String myOrders = '/myOrders';
   static const String promoCode = '/promoCode';
+  static const String changePassword = '/changePassword';
+
   // static const String otp = '/otp';
+  // ChangePasswordScreen
   //
   // MasonryGridViewWidget
 
@@ -165,6 +169,12 @@ class AppRoute {
     GetPage(
       name: promoCode,
       page: () => PromoCodeItems(),
+      // transition: Transition.noTransition,
+      // binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: changePassword,
+      page: () => ChangePasswordScreen(),
       // transition: Transition.noTransition,
       // binding: ProfileBinding(),
     ),

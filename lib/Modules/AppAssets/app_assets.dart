@@ -18,4 +18,13 @@ class AppAssets {
   static String contact = 'assets/icons/phone.svg';
   static String info = 'assets/icons/information.svg';
   static String support = 'assets/icons/customer-service.svg';
+  // payment
+  static String visa = 'assets/images/visa.svg';
+  static String masterCard = 'assets/images/master-card-securecode.svg';
+  static String americanExpress = 'assets/images/american-express.svg';
+  static String paypal = 'assets/images/paypal.svg';
+  static String applePay = 'assets/images/apple-pay.svg';
+  static String facebook = 'assets/icons/facebook.svg';
+  static String telegram = 'assets/icons/telegram.svg';
+  static String instagram = 'assets/icons/instagram.svg';
 }

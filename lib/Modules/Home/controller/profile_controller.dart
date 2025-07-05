@@ -53,6 +53,7 @@ class ProfileController extends GetxController {
               .maybeSingle();
 
       final oldAvatarPath = profileResponse?['profile_image'] as String?;
+      await Future.delayed(Duration(seconds: 2));
 
       await _supabase.storage
           .from('avatars')
@@ -166,47 +167,105 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      isLoading.value = true;
+      final userId = _supabase.auth.currentUser?.id;
+      final email = _supabase.auth.currentUser?.email;
+
+      if (userId == null || email == null) {
+        throw Exception('User not authenticated');
+      }
+
+      // First verify current password
+      final authResponse = await _supabase.auth.signInWithPassword(
+        email: email,
+        password: currentPassword,
+      );
+
+      if (authResponse.user == null) {
+        throw Exception('Current password is incorrect');
+      }
+
+      // Then update to new password
+      await _supabase.auth.updateUser(UserAttributes(password: newPassword));
+
+      // Update the updated_at timestamp in profiles table
+      await _supabase
+          .from('profiles')
+          .update({'updated_at': DateTime.now().toIso8601String()})
+          .eq('id', userId);
+
+      updatedAt.value = DateTime.now().toIso8601String();
+      return true;
+    } catch (e) {
+      throw Exception('Failed to change password: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> updateProfile({
     String? newUsername,
     String? newEmail,
-    String? newAge,
     String? newGender,
     String? newPhoneNumber,
     String? newAddress,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) return;
+    if (userId == null) {
+      Get.snackbar('Error', 'User not authenticated');
+      return;
+    }
 
     try {
       isLoading.value = true;
       final updates = {
         'id': userId,
         'updated_at': DateTime.now().toIso8601String(),
-        if (newUsername != null) 'username': newUsername,
-        if (newEmail != null) 'email': newEmail,
-        if (newAge != null) 'age': newAge,
-        if (newGender != null) 'gender': newGender,
-        if (newPhoneNumber != null) 'phoneNumber': newPhoneNumber,
-        if (newAddress != null) 'address': newAddress,
+        if (newUsername != null && newUsername.isNotEmpty)
+          'username': newUsername,
+        if (newEmail != null && newEmail.isNotEmpty) 'email': newEmail,
+        if (newGender != null && newGender.isNotEmpty) 'gender': newGender,
+        if (newPhoneNumber != null && newPhoneNumber.isNotEmpty)
+          'phoneNumber': newPhoneNumber,
+        if (newAddress != null && newAddress.isNotEmpty) 'address': newAddress,
       };
 
-      await _supabase.from('profiles').upsert(updates);
+      if (updates.length > 2) {
+        // More than just id and updated_at
+        await _supabase.from('profiles').upsert(updates);
+      }
 
-      if (newUsername != null) username.value = newUsername;
-      if (newEmail != null) email.value = newEmail;
-      if (newAge != null) age.value = newAge;
-      if (newGender != null) gender.value = newGender;
-      if (newPhoneNumber != null) phoneNumber.value = newPhoneNumber;
-      if (newAddress != null) address.value = newAddress;
+      // Update local state only if the value was provided and not empty
+      if (newUsername != null && newUsername.isNotEmpty) {
+        username.value = newUsername;
+      }
+      if (newEmail != null && newEmail.isNotEmpty) email.value = newEmail;
+      if (newGender != null && newGender.isNotEmpty) gender.value = newGender;
+      if (newPhoneNumber != null && newPhoneNumber.isNotEmpty) {
+        phoneNumber.value = newPhoneNumber;
+      }
+      if (newAddress != null && newAddress.isNotEmpty) {
+        address.value = newAddress;
+      }
 
       updatedAt.value = DateTime.now().toIso8601String();
     } catch (e) {
-      //
+      Get.snackbar('Error', 'Failed to update profile: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
-  }
 
+    username.value = newUsername ?? username.value;
+    email.value = newEmail ?? email.value;
+    gender.value = newGender ?? gender.value;
+    phoneNumber.value = newPhoneNumber ?? phoneNumber.value;
+    address.value = newAddress ?? address.value;
+  }
   // ----------------- Helpers -----------------
 
   Future<bool> _doesFileExist(String filePath) async {
@@ -253,6 +312,21 @@ class ProfileController extends GetxController {
       return url;
     }
     return '';
+  }
+
+  Future<bool> verifyCurrentPassword(String password) async {
+    try {
+      final email = _supabase.auth.currentUser?.email;
+      if (email == null) return false;
+
+      final result = await _supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      return result.user != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   void resetProfile() {

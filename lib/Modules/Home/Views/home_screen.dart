@@ -176,11 +176,7 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             child: Center(
                               child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: 50,
-                                  left: 50,
-                                  right: 50,
-                                ),
+                                padding: EdgeInsets.only(top: 50),
                                 child: Column(
                                   spacing: 14,
                                   mainAxisSize: MainAxisSize.min,
@@ -193,33 +189,40 @@ class HomeScreen extends GetView<HomeController> {
                                         color: AppColors.background,
                                       ),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        shadowColor: Colors.transparent,
-                                        side: BorderSide(
-                                          color: AppColors.accent,
-                                          width: 1,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            32,
+                                    SizedBox(
+                                      height: 52,
+                                      width: 180,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          elevation: 0,
+                                          shadowColor: Colors.transparent,
+                                          side: BorderSide(
+                                            color: AppColors.primary,
+                                            width: 1.5,
+                                          ),
+
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              32,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        Get.offAndToNamed(
-                                          AppRoute.searchScreen,
-                                        );
-                                      },
-                                      child: Text(
-                                        'Shop Now',
-                                        style: AppTheme
-                                            .lightTheme
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(color: AppColors.accent),
+                                        onPressed: () {
+                                          Get.offAndToNamed(
+                                            AppRoute.searchScreen,
+                                          );
+                                        },
+                                        child: Text(
+                                          'Shop Now',
+                                          style: AppTheme
+                                              .lightTheme
+                                              .textTheme
+                                              .titleSmall
+                                              ?.copyWith(
+                                                color: AppColors.accent,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -255,14 +258,14 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildHorizontalSlide(BuildContext context) {
+  Widget _buildHorizontalSlide(BuildContext context) {
     final controller = Get.find<HomeController>();
     return Obx(
       () =>
           controller.isLoading.value
               ? _buildHorizontalSlideShimmer(Get.context!)
               : controller.tShirtModels.isEmpty
-              ? Center(child: Text('No found'))
+              ? Center(child: Text('No internet'))
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -307,100 +310,106 @@ class HomeScreen extends GetView<HomeController> {
                             margin: const EdgeInsets.only(right: 14),
                             child: Stack(
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                        tShirt.image ?? '',
+                                Hero(
+                                  tag: 'product-${tShirt.id ?? tShirt.image}',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                          tShirt.image ?? '',
+                                        ),
+                                        fit: BoxFit.cover,
                                       ),
-                                      fit: BoxFit.cover,
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.only(top: 140),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 4,
+                                    padding: const EdgeInsets.only(top: 140),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Theme.of(context).cardColor,
                                             ),
-                                            child: Text(
-                                              tShirt.title ?? 'No Title',
-                                              style:
-                                                  AppTheme
-                                                      .lightTheme
-                                                      .textTheme
-                                                      .bodyLarge,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 4,
+                                              ),
+                                              child: Text(
+                                                tShirt.title ?? 'No Title',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodyLarge,
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          height: 20,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                  bottomLeft: Radius.circular(
-                                                    12,
+                                        Expanded(
+                                          child: Container(
+                                            height: 20,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Theme.of(context).cardColor,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                    bottomLeft: Radius.circular(
+                                                      12,
+                                                    ),
+                                                    bottomRight:
+                                                        Radius.circular(12),
                                                   ),
-                                                  bottomRight: Radius.circular(
-                                                    12,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 0).toStringAsFixed(2)}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.copyWith(
+                                                          color:
+                                                              AppColors.primary,
+                                                        ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  '\$${(tShirt.price != null ? tShirt.price! * 0.55 : 0).toStringAsFixed(2)}',
-                                                  style: AppTheme
-                                                      .lightTheme
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                        color:
-                                                            AppColors.primary,
-                                                      ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                Flexible(
+                                                  child: Text(
+                                                    "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
+                                                    style: AppTheme
+                                                        .lightTheme
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.copyWith(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                          decorationColor:
+                                                              AppColors.error,
+                                                          color:
+                                                              AppColors.error,
+                                                        ),
+                                                    //
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
                                                 ),
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  "\$${tShirt.price?.toStringAsFixed(2) ?? ''}",
-                                                  style: AppTheme
-                                                      .lightTheme
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                        color: AppColors.error,
-                                                      ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Positioned(
@@ -444,7 +453,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildHorizontalSlideShimmer(BuildContext context) {
+  Widget _buildHorizontalSlideShimmer(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -507,7 +516,7 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  _buildVerticalTitle(BuildContext context) {
+  Widget _buildVerticalTitle(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: SliverList(
@@ -588,129 +597,135 @@ class HomeScreen extends GetView<HomeController> {
                           ),
                         );
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              item['image'].toString(),
+                      child: Hero(
+                        tag: 'product-image-${item['id'] ?? item['image']}',
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                item['image'].toString(),
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                SizedBox(
-                                  child: Container(
-                                    color: Colors.white,
-                                    alignment: Alignment.center,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 4,
-                                        top: 4,
-                                      ),
-                                      child: Text(
-                                        item['title'] != null &&
-                                                item['title']!.length > 20
-                                            ? '${item['title']?.substring(0, 17)} '
-                                            : item['title'] ?? '',
-                                        style:
-                                            AppTheme
-                                                .lightTheme
-                                                .textTheme
-                                                .bodyLarge,
-                                        textAlign: TextAlign.center,
+                          child: Stack(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    child: Container(
+                                      color: Theme.of(context).cardColor,
+                                      alignment: Alignment.center,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 4,
+                                          top: 4,
+                                        ),
+                                        child: Text(
+                                          item['title'] != null &&
+                                                  item['title']!.length > 20
+                                              ? '${item['title']?.substring(0, 17)} '
+                                              : item['title'] ?? '',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.bodyLarge,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.vertical(
-                                        bottom: Radius.circular(12),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 14,
-                                            right: 4,
-                                            bottom: 6,
-                                          ),
-                                          child: Text(
-                                            '\$${item['price'] ?? ''}',
-                                            style: AppTheme
-                                                .lightTheme
-                                                .textTheme
-                                                .titleSmall
-                                                ?.copyWith(
-                                                  color: AppColors.primary,
-                                                ),
-                                          ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).cardColor,
+                                        borderRadius: BorderRadius.vertical(
+                                          bottom: Radius.circular(12),
                                         ),
-                                        if (item['discount'] != null &&
-                                            item['discount']
-                                                .toString()
-                                                .isNotEmpty)
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
                                           Padding(
-                                            padding: EdgeInsets.only(right: 14),
+                                            padding: const EdgeInsets.only(
+                                              left: 14,
+                                              right: 4,
+                                              bottom: 6,
+                                            ),
                                             child: Text(
-                                              '\$${item['discount']}',
+                                              '\$${item['price'] ?? ''}',
                                               style: AppTheme
                                                   .lightTheme
                                                   .textTheme
-                                                  .bodyLarge
+                                                  .titleSmall
                                                   ?.copyWith(
-                                                    decoration:
-                                                        TextDecoration
-                                                            .lineThrough,
-                                                    color: AppColors.error,
+                                                    color: AppColors.primary,
                                                   ),
                                             ),
                                           ),
-                                      ],
+                                          if (item['discount'] != null &&
+                                              item['discount']
+                                                  .toString()
+                                                  .isNotEmpty)
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                right: 14,
+                                              ),
+                                              child: Text(
+                                                '\$${item['discount']}',
+                                                style: AppTheme
+                                                    .lightTheme
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(
+                                                      decoration:
+                                                          TextDecoration
+                                                              .lineThrough,
+                                                      decorationColor:
+                                                          AppColors.error,
+                                                      color: AppColors.error,
+                                                    ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: LikeButton(
-                                size: 30,
-                                circleColor: CircleColor(
-                                  start: Color(0xff00ddff),
-                                  end: Color(0xff0099cc),
-                                ),
-                                bubblesColor: const BubblesColor(
-                                  dotPrimaryColor: Colors.pink,
-                                  dotSecondaryColor: Colors.white,
-                                ),
-                                likeBuilder: (bool isLiked) {
-                                  return Icon(
-                                    Icons.favorite,
-                                    color:
-                                        isLiked
-                                            ? Colors.red
-                                            : Colors.grey.withValues(
-                                              alpha: 0.5,
-                                            ),
-                                    size: 30,
-                                  );
-                                },
+                                ],
                               ),
-                            ),
-                          ],
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: LikeButton(
+                                  size: 30,
+                                  circleColor: CircleColor(
+                                    start: Color(0xff00ddff),
+                                    end: Color(0xff0099cc),
+                                  ),
+                                  bubblesColor: const BubblesColor(
+                                    dotPrimaryColor: Colors.pink,
+                                    dotSecondaryColor: Colors.white,
+                                  ),
+                                  likeBuilder: (bool isLiked) {
+                                    return Icon(
+                                      Icons.favorite,
+                                      color:
+                                          isLiked
+                                              ? Colors.red
+                                              : Colors.grey.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                      size: 30,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
