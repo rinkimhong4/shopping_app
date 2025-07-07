@@ -66,7 +66,7 @@ class _ClothingFilterPopupFakeState extends State<ClothingFilterPopupFake> {
     final discount = double.tryParse(widget.product.discount ?? '0.0') ?? 0.0;
     final originalPrice = price + discount;
     final totalPrice = price * quantity;
-    final totalOriginalPrice = originalPrice * quantity;
+    final totalOriginalPrice = originalPrice;
     final discountPercentage = calculateDiscountPercentage(
       widget.product.price,
       widget.product.discount,

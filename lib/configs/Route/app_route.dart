@@ -24,6 +24,7 @@ import 'package:shopping_app/Modules/items/profile/other_setting_profile/about_u
 import 'package:shopping_app/Modules/items/profile/other_setting_profile/contact_preference.dart';
 import 'package:shopping_app/Modules/items/profile/other_setting_profile/customer_support.dart';
 import 'package:shopping_app/Modules/items/profile/other_setting_profile/term_condition.dart';
+import 'package:shopping_app/Modules/items/profile/paid_screen.dart';
 
 class AppRoute {
   static const String splash = '/splash';
@@ -47,11 +48,7 @@ class AppRoute {
   static const String myOrders = '/myOrders';
   static const String promoCode = '/promoCode';
   static const String changePassword = '/changePassword';
-
-  // static const String otp = '/otp';
-  // ChangePasswordScreen
-  //
-  // MasonryGridViewWidget
+  static const String paidScreen = '/paidScreen';
 
   static final pages = [
     GetPage(
@@ -184,11 +181,11 @@ class AppRoute {
     //   // transition: Transition.noTransition,
     //   // binding: ProfileBinding(),
     // ),
-    // GetPage(
-    //   name: newPassword,
-    //   page: () => NewPasswordScreen(),
-    //   // transition: Transition.noTransition,
-    //   // binding: ProfileBinding(),
-    // ),
+    GetPage(
+      name: paidScreen,
+      page: () => PaidScreenItems(),
+      // transition: Transition.noTransition,
+      // binding: ProfileBinding(),
+    ),
   ];
 }

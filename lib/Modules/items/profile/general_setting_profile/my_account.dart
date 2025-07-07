@@ -358,7 +358,7 @@ class _MyAccountItemsState extends State<MyAccountItems> {
           child:
               profileController.isLoading.value
                   ? CircularProgressIndicator.adaptive(strokeWidth: 2)
-                  : Text('Save'),
+                  : Text('Save Changes'),
         );
       }),
     );

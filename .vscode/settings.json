@@ -8,5 +8,6 @@
     "Getx",
     "headlinemedium",
     "supabase"
-  ]
+  ],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

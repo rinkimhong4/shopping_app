@@ -461,7 +461,7 @@ class ContactPreferenceItems extends StatelessWidget {
           // height: 200,
           decoration: BoxDecoration(color: Theme.of(context).cardColor),
           child: Padding(
-            padding: EdgeInsets.only(top: 20, bottom: 500),
+            padding: EdgeInsets.only(top: 20, bottom: 30),
             child: Column(
               children: [
                 Row(
@@ -665,13 +665,12 @@ class ContactPreferenceItems extends StatelessWidget {
                     ),
                   ],
                 ),
-                //=====================
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text('data'), Row(children: [
-
-                  ],
-                )],
+                Padding(
+                  padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    "© 2025 Kimhong Rin. All rights reserved.",
+                  ),
                 ),
               ],
             ),
