@@ -391,10 +391,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         overlayColor: AppColors.primary,
-                                        minimumSize: const Size(
-                                          double.infinity,
-                                          54,
-                                        ),
+                                        minimumSize: Size(double.infinity, 54),
                                         elevation: 0,
                                         backgroundColor: AppColors.background,
                                         side: BorderSide(
@@ -424,16 +421,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                             color: AppColors.primary,
                                             size: 24,
                                           ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            social['label'],
-                                            style: AppTheme
-                                                .lightTheme
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                  color: AppColors.primary,
-                                                ),
+                                          SizedBox(width: 8),
+                                          Flexible(
+                                            child: Text(
+                                              social['label'],
+                                              style: AppTheme
+                                                  .lightTheme
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: AppColors.primary,
+                                                  ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -442,7 +441,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }).toList(),
                           ),
                           // Sign Up
-                          const SizedBox(height: 130),
+                          const SizedBox(height: 100),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

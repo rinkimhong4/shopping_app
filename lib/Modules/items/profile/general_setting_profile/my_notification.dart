@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';

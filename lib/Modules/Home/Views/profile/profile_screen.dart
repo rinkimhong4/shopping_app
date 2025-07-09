@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 import 'package:shopping_app/Modules/Home/controller/auth_controller.dart';
 import 'package:shopping_app/Modules/Home/controller/profile_controller.dart';
@@ -96,6 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         onPressed: () {
+          Get.toNamed(AppRoute.notification);
           //
         },
       ),
@@ -109,7 +110,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             BlendMode.srcIn,
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Get.toNamed(AppRoute.masonry);
+        },
       ),
       SizedBox(width: 14),
     ],

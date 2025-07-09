@@ -27,4 +27,8 @@ class AppAssets {
   static String facebook = 'assets/icons/facebook.svg';
   static String telegram = 'assets/icons/telegram.svg';
   static String instagram = 'assets/icons/instagram.svg';
+  //
+  static String carDelivery = 'assets/images/car_delivery.png';
+  static String deliveryMan = 'assets/images/delivery_man.png';
+  static String email = 'assets/icons/email.svg';
 }

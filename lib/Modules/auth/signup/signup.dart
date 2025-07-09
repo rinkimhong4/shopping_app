@@ -155,7 +155,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32),
                                 borderSide: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.backgroundDark,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
@@ -253,7 +253,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32),
                                 borderSide: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.backgroundDark,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
@@ -336,7 +336,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32),
                                 borderSide: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.backgroundDark,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
@@ -516,7 +516,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                             style: AppTheme
                                                 .lightTheme
                                                 .textTheme
-                                                .bodyMedium
+                                                .bodySmall
                                                 ?.copyWith(
                                                   color: AppColors.primary,
                                                 ),
@@ -527,7 +527,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   );
                                 }).toList(),
                           ),
-                          const SizedBox(height: 65),
+                          const SizedBox(height: 63),
                           // Sign In Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

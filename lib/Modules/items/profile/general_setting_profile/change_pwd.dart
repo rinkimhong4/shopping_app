@@ -231,7 +231,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   },
           child: AnimatedContainer(
             duration: Duration(milliseconds: 100),
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 170),
+            width: double.infinity,
+            height: 52,
             decoration: BoxDecoration(
               color:
                   _isButtonPressed.value
@@ -245,12 +246,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       strokeWidth: 2,
                       color: Colors.white,
                     )
-                    : Text(
-                      'Save',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    : Center(
+                      child: Text(
+                        'Save',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
           ),

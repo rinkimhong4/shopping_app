@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
@@ -43,7 +42,7 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
   bool _followUserLocation = true;
   String _currentAddress = 'Loading address...';
   StreamSubscription<LocationData>? _locationSubscription;
-  Location _locationService = Location();
+  final Location _locationService = Location();
 
   @override
   void initState() {
@@ -141,8 +140,9 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
     _locationSubscription = _locationService.onLocationChanged.listen((
       locationData,
     ) {
-      if (locationData.latitude == null || locationData.longitude == null)
+      if (locationData.latitude == null || locationData.longitude == null) {
         return;
+      }
 
       setState(() {
         _currentPosition = LatLng(
@@ -336,13 +336,6 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Delivery Location'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: Stack(
         children: [
           _buildMap(),
@@ -350,48 +343,51 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
           if (_isLoading) _buildLoader(),
           if (widget.onLocationConfirmed != null)
             Positioned(
-              bottom: 100,
+              bottom: 150,
               left: 20,
               right: 20,
-              child: ElevatedButton(
-                onPressed:
-                    _currentPosition != null
-                        ? () {
-                          // Pass location data to callback
-                          widget.onLocationConfirmed!(
-                            _destination ?? _currentPosition!,
-                            _currentAddress,
-                          );
+              child: Padding(
+                padding: const EdgeInsets.only(left: 70, right: 70),
+                child: ElevatedButton(
+                  onPressed:
+                      _currentPosition != null
+                          ? () {
+                            // Pass location data to callback
+                            widget.onLocationConfirmed!(
+                              _destination ?? _currentPosition!,
+                              _currentAddress,
+                            );
 
-                          // Close the map screen
-                          Navigator.pop(context);
-                        }
-                        : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                            // Close the map screen
+                            Navigator.pop(context);
+                          }
+                          : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ),
-                child: Text(
-                  'Add address details',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  child: Text(
+                    'Add address details',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
           Positioned(
-            bottom: 160,
+            bottom: 230,
             left: 20,
             right: 20,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -477,7 +473,7 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -542,6 +538,14 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 16,
@@ -580,10 +584,10 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
           mini: true,
           tooltip: 'Clear route',
           backgroundColor: Colors.white,
-          child: const Icon(Icons.clear, color: Colors.red),
           onPressed: _resetMap,
+          child: const Icon(Icons.clear, color: Colors.red),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         FloatingActionButton(
           heroTag: 'follow',
           mini: true,
@@ -602,7 +606,7 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
           heroTag: 'location',
           tooltip: 'Center on my location',
           backgroundColor: Colors.blue,
-          child: const Icon(Icons.my_location, color: Colors.white),
+          child: Icon(Icons.my_location, color: Colors.white),
           onPressed: () {
             if (_currentPosition != null) {
               _centerMap(_currentPosition!, 17);

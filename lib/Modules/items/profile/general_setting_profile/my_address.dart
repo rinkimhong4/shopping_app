@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/Views/open_street_map.dart';
 
 class MyAddressItems extends StatefulWidget {
@@ -80,7 +81,81 @@ class _MyAddressItemsState extends State<MyAddressItems> {
   Widget _buildBody(BuildContext context) {
     return CustomScrollView(
       controller: _scrollController,
-      slivers: [_buildAppBar(context), _buildAddressList(context)],
+      slivers: [
+        _buildAppBar(context),
+        _addresses.isEmpty
+            ? SliverFillRemaining(
+              hasScrollBody: false,
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Positioned(
+                    top: Get.height * 0.34,
+                    child: Image.asset(AppAssets.carDelivery, height: 150),
+                  ),
+                  Positioned(
+                    bottom: Get.height * 0.49,
+                    child: Image.asset(AppAssets.deliveryMan, height: 160),
+                  ),
+                  Positioned(
+                    top: Get.height * 0.48,
+                    child: Text(
+                      "It's empty here",
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Positioned(
+                    top: Get.height * 0.53,
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "You haven't saved any address yet.\n"
+                      "Add new to get started.",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                    ),
+                  ),
+                  Positioned(
+                    top: Get.height * 0.60,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 37,
+                          vertical: 16,
+                        ),
+                        foregroundColor: Colors.white,
+                        textStyle: Theme.of(context).textTheme.bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        minimumSize: const Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.center,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      onPressed: () {
+                        Get.bottomSheet(
+                          _buildAddAddressBottomSheet(context),
+                          isScrollControlled: true,
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('Add Address'),
+                    ),
+                  ),
+                ],
+              ),
+            )
+            : _buildAddressList(context),
+      ],
     );
   }
 
@@ -144,7 +219,6 @@ class _MyAddressItemsState extends State<MyAddressItems> {
   }
 
   void _addAddressDirectly(LatLng location, String address) {
-    // Generate a default name based on address
     final defaultName = address.split(',').take(2).join(',');
 
     _addAddress(
@@ -185,13 +259,13 @@ class _MyAddressItemsState extends State<MyAddressItems> {
                     address.address,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Lat: ${address.latitude.toStringAsFixed(6)}, Lng: ${address.longitude.toStringAsFixed(6)}",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(fontSize: 10),
-                  ),
+                  // SizedBox(height: 4),
+                  // Text(
+                  //   "Lat: ${address.latitude.toStringAsFixed(6)}, Lng: ${address.longitude.toStringAsFixed(6)}",
+                  //   style: Theme.of(
+                  //     context,
+                  //   ).textTheme.bodySmall?.copyWith(fontSize: 10),
+                  // ),
                 ],
               ),
               trailing: Row(
@@ -202,7 +276,18 @@ class _MyAddressItemsState extends State<MyAddressItems> {
                       Icons.edit_outlined,
                       color: Theme.of(context).iconTheme.color,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.bottomSheet(
+                        _buildAddAddressBottomSheet(context),
+                        isScrollControlled: true,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: Icon(

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shopping_app/Modules/Home/models/mete_data_model.dart';
 import 'package:shopping_app/Modules/Home/models/profile_model.dart';
+import 'package:shopping_app/core/data/hypewear_metadata.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,10 +27,24 @@ class ProfileController extends GetxController {
 
   ProfileModel profileModel = ProfileModel();
 
+  final hypeWearMetaData = HypeWearMetaData().obs;
+
   @override
   void onInit() {
     super.onInit();
     loadProfile();
+    loadProfileMetadata();
+  }
+
+  Future<void> loadProfileMetadata() async {
+    try {
+      isLoading.value = true;
+      hypeWearMetaData.value = HypeWearMetaData.fromJson(Datas.data);
+    } catch (e) {
+      // print('Error loading metadata: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> uploadProfileImage(String userId) async {

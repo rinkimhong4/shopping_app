@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';

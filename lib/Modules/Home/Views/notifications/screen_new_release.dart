@@ -5,7 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:shopping_app/Modules/AppAssets/app_assets.dart';
+import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_non_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
