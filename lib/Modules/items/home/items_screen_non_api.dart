@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
+import 'package:shopping_app/Modules/Home/controller/bag_controller.dart';
 import 'package:shopping_app/widgets/filter_screen_non_api.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
@@ -276,6 +279,8 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final BagController bagController = Get.find<BagController>();
+
     return Row(
       children: [
         Container(
@@ -344,6 +349,21 @@ class _DetainScreenNonAPIState extends State<DetainScreenNonAPI> {
                   setState(() {
                     quantity = result['quantity'] ?? quantity;
                   });
+                  // Add to cart with size and color
+                  bagController.addToCart(
+                    widget.product,
+                    result['quantity'] ?? quantity,
+                    size: result['size'],
+                    color: result['color'],
+                  );
+                  Get.snackbar(
+                    '${widget.product.title}',
+                    'Added to cart',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: Colors.black,
+                    colorText: Colors.white,
+                    duration: const Duration(milliseconds: 800),
+                  );
                 }
               });
             },

@@ -1,36 +1,35 @@
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:shopping_app/Modules/Home/models/product_model_api.dart';
-import 'package:shopping_app/core/service/api_service.dart';
-import 'package:shopping_app/core/string/string_con.dart';
 
 class SearchControllerGetX extends GetxController {
-  ApiService get apiService => ApiService(baseUrl: BASE_URL);
-  var isLoading = true.obs;
-  RxList<TShirtModel> shirtModels = <TShirtModel>[].obs;
+  var tShirtModels = <TShirtModel>[].obs;
+  var isLoading = false.obs;
 
-  Future<void> loadingClothing() async {
-    isLoading.value = true;
-
+  Future<void> fetchTShirts({bool isRefresh = false}) async {
+    var client = http.Client();
     try {
-      final data = await apiService.callApi<List<dynamic>>(
-        endpoint: PRODUCT,
-        body: {},
-        fromJson:
-            (data) =>
-                (data as List)
-                    .map((item) => TShirtModel.fromJson(item))
-                    .toList(),
+      isLoading.value = true;
+      final response = await client.get(
+        Uri.http('fakestoreapi.com', 'products/'),
       );
-      shirtModels.value = data.cast<TShirtModel>();
+      if (response.statusCode == 200) {
+        final fetchedTShirts = tShirtModelFromJson(response.body);
+        tShirtModels.assignAll(fetchedTShirts);
+      } else {
+        Get.snackbar('Error', 'Failed to fetch products');
+      }
     } catch (e) {
-      shirtModels.value = [];
+      Get.snackbar('Error', 'An error occurred: $e');
+    } finally {
+      client.close();
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
   @override
-  Future<void> onInit() async {
+  void onInit() {
     super.onInit();
-    await loadingClothing();
+    fetchTShirts();
   }
 }

@@ -31,4 +31,9 @@ class AppAssets {
   static String carDelivery = 'assets/images/car_delivery.png';
   static String deliveryMan = 'assets/images/delivery_man.png';
   static String email = 'assets/icons/email.svg';
+  static String trash = 'assets/icons/trash.svg';
+  static String aba = 'assets/images/ABA.png';
+  static String acleda = 'assets/images/ACLEDA.png';
+  static String ftb = 'assets/images/ftb.png';
+  static String wing = 'assets/images/wing.png';
 }

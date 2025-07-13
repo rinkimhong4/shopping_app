@@ -8,6 +8,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_fake_api.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_non_api.dart';
+import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/core/data/home_data.dart' show HomeDataSlider;
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
@@ -78,9 +79,11 @@ class _BellScreenNewReleaseState extends State<BellScreenNewRelease> {
                 BlendMode.srcIn,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed(AppRoute.searchScreen);
+            },
           ),
-          const SizedBox(width: 24),
+          SizedBox(width: 24),
         ],
       ),
       body: Container(

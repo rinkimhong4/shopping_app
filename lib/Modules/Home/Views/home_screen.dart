@@ -27,6 +27,7 @@ class HomeScreen extends GetView<HomeController> {
   void _onNavItemTapped(int index) {
     switch (index) {
       case 0:
+        Get.offAndToNamed(AppRoute.home);
         break;
       case 1:
         Get.offAndToNamed(AppRoute.searchScreen);
@@ -49,7 +50,7 @@ class HomeScreen extends GetView<HomeController> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: _buildAppBar(context),
-      body: _buildBody(),
+      body: _buildBody(context),
       bottomNavigationBar: ButtonNavigationWidget(
         selectedIndex: _selectedIndex,
         onTap: _onNavItemTapped,
@@ -98,7 +99,7 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           onPressed: () {
-            Get.toNamed(AppRoute.masonry);
+            Get.toNamed(AppRoute.newRelease);
           },
         ),
         SizedBox(width: 14),
@@ -106,9 +107,12 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    // Create a unique RefreshController for this SmartRefresher
+    final RefreshController _refreshController = RefreshController();
+
     return SmartRefresher(
-      controller: controller.refreshController,
+      controller: _refreshController,
       header: WaterDropHeader(
         waterDropColor: AppColors.primary,
         complete: Row(
@@ -123,16 +127,20 @@ class HomeScreen extends GetView<HomeController> {
           ],
         ),
       ),
-      onRefresh: controller.onRefresh,
+      onRefresh: () async {
+        // Call the refresh logic from your controller
+        await controller.onRefresh();
+        _refreshController.refreshCompleted();
+      },
       child: CustomScrollView(
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([
               _bannerSlider,
-              _buildHorizontalSlide(Get.context!),
+              _buildHorizontalSlide(context),
             ]),
           ),
-          _buildVerticalTitle(Get.context!),
+          _buildVerticalTitle(context),
           _popularProductsGrid,
         ],
       ),

@@ -1,3 +1,5 @@
+// ignore_for_file: control_flow_in_finally
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -9,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
-//  not already at all
+//  not already at all // ui
 class ShowMapScreen extends StatefulWidget {
   final Function(LatLng, String)? onLocationConfirmed;
 
@@ -213,7 +215,6 @@ class _ShowMapScreenState extends State<ShowMapScreen> {
       if (!mounted) return;
       _showError('Search failed: ${e.toString()}');
     } finally {
-      // ignore: control_flow_in_finally
       if (!mounted) return;
       setState(() => _isLoading = false);
     }

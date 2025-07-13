@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         onPressed: () {
-          Get.toNamed(AppRoute.masonry);
+          Get.toNamed(AppRoute.newRelease);
         },
       ),
       SizedBox(width: 14),

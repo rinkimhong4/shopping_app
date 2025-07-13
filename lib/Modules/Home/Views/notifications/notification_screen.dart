@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shopping_app/configs/AppAssets/app_assets.dart';
 import 'package:shopping_app/Modules/Home/controller/home_controller.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';
 import 'package:shopping_app/Modules/Home/controller/app_theme_controller.dart';
@@ -67,21 +65,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             'Notifications',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          actions: [
-            IconButton(
-              icon: SvgPicture.asset(
-                AppAssets.searchOutline,
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).iconTheme.color ?? Colors.black,
-                  BlendMode.srcIn,
-                ),
-              ),
-              onPressed: () {},
-            ),
-            SizedBox(width: 24),
-          ],
         ),
         body: LiquidPullToRefresh(
           key: _refreshIndicatorKey,

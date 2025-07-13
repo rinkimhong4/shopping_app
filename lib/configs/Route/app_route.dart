@@ -13,6 +13,8 @@ import 'package:shopping_app/Modules/Home/binding/profile_binding.dart';
 import 'package:shopping_app/Modules/Home/binding/search_binding.dart';
 import 'package:shopping_app/Modules/auth/login/login.dart';
 import 'package:shopping_app/Modules/auth/signup/signup.dart';
+import 'package:shopping_app/Modules/items/check_out.dart';
+import 'package:shopping_app/Modules/items/brand_profile.dart';
 import 'package:shopping_app/Modules/items/profile/card_items/my_orders.dart';
 import 'package:shopping_app/Modules/items/profile/card_items/promo_code.dart';
 import 'package:shopping_app/Modules/items/profile/general_setting_profile/change_pwd.dart';
@@ -36,7 +38,7 @@ class AppRoute {
   static const String searchScreen = '/searchScreen';
   static const String profile = '/profile';
   static const String notification = '/notification';
-  static const String masonry = '/masonry';
+  static const String newRelease = '/newRelease';
   static const String generalSetting = '/generalSetting';
   static const String myAddress = '/myAddress';
   static const String myNotification = '/myNotification';
@@ -49,6 +51,8 @@ class AppRoute {
   static const String promoCode = '/promoCode';
   static const String changePassword = '/changePassword';
   static const String paidScreen = '/paidScreen';
+  static const String checkout = '/checkout';
+  static const String brandProfile = '/brandProfile';
 
   static final pages = [
     GetPage(
@@ -60,6 +64,18 @@ class AppRoute {
     GetPage(
       name: onboarding,
       page: () => OnboardingScreen(),
+      // transition: Transition.rightToLeftWithFade,
+      // transitionDuration: Duration(seconds: 3),
+    ),
+    GetPage(
+      name: brandProfile,
+      page: () => BrandProfileScreen(),
+      // transition: Transition.rightToLeftWithFade,
+      // transitionDuration: Duration(seconds: 3),
+    ),
+    GetPage(
+      name: checkout,
+      page: () => CheckOutScreen(),
       // transition: Transition.rightToLeftWithFade,
       // transitionDuration: Duration(seconds: 3),
     ),
@@ -104,7 +120,7 @@ class AppRoute {
       // binding: ProfileBinding(),
     ),
     GetPage(
-      name: masonry,
+      name: newRelease,
       page: () => BellScreenNewRelease(),
       // transition: Transition.noTransition,
       // binding: ProfileBinding(),
