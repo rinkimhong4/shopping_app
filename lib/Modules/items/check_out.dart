@@ -23,6 +23,8 @@ class CheckOutScreen extends StatefulWidget {
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
   String? selectedPaymentMethod;
+  bool _isChecked1 = false;
+  bool _isChecked2 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +63,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           return sum + ((price - discount) * quantity);
         });
         const double delivery = 2.0;
-        const double vatPercentage = 0.20;
-        final double vat = subTotal * vatPercentage;
+        const double vatPercentage = 20;
+        final double vat = (vatPercentage / 100) * delivery;
         final double totalAmount = subTotal + delivery + vat;
 
         return CustomScrollView(
@@ -131,8 +133,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       totalAmount,
                       isTotal: true,
                     ),
-                    const SizedBox(height: 32),
+                    Divider(height: 32, thickness: 0.5),
+                    // Delivery Type
+                    _buildDeliveryType(),
+                    // SizedBox(height: 32),
                     // Payment Methods
+                    Divider(height: 32, thickness: 0.5),
                     Text(
                       'Payment Methods',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -209,8 +215,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       ),
                       child: Text(
                         'Pay',
-                        style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -220,6 +228,60 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildDeliveryType() {
+    return Column(
+      spacing: 4,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Delivery by',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8),
+        Column(
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  activeColor: Theme.of(context).primaryColor,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  value: _isChecked1,
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked1 = value!;
+                    });
+                  },
+                ),
+                Text('J&T'),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  activeColor: Theme.of(context).primaryColor,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  value: _isChecked2,
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked2 = value!;
+                    });
+                  },
+                ),
+                Text('Vireak Buntham Express'),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -268,7 +330,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           // Product Details
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -281,7 +343,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  // Size and Color
                   Row(
                     children: [
                       if (size != null)
@@ -310,7 +371,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             '\$${(discountedPrice * quantity).toStringAsFixed(2)}',
                             style: Theme.of(
                               context,
-                            ).textTheme.titleMedium?.copyWith(
+                            ).textTheme.titleSmall?.copyWith(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
@@ -330,9 +391,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ],
                       ),
                       Text(
-                        'Qty: $quantity',
+                        '$quantity x',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -365,8 +426,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           ),
           Text(
             '\$${amount.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.bold,
               color:
                   isTotal
                       ? Theme.of(context).primaryColor

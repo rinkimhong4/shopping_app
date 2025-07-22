@@ -47,6 +47,17 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> refreshProfile() async {
+    try {
+      isLoading.value = true;
+      await loadProfile();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to refresh profile: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> uploadProfileImage(String userId) async {
     if (userId.isEmpty) return;
 

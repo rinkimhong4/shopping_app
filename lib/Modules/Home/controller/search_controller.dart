@@ -17,10 +17,10 @@ class SearchControllerGetX extends GetxController {
         final fetchedTShirts = tShirtModelFromJson(response.body);
         tShirtModels.assignAll(fetchedTShirts);
       } else {
-        Get.snackbar('Error', 'Failed to fetch products');
+        // Get.snackbar('Error', 'Failed to fetch products');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      // Get.snackbar('Error', 'An error occurred: $e');
     } finally {
       client.close();
       isLoading.value = false;

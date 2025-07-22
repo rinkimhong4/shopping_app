@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/configs/AppAssets/app_assets.dart';
-import 'package:shopping_app/Modules/Home/Views/open_street_map.dart';
+import 'package:shopping_app/Modules/items/profile/general_setting_profile/open_street_map.dart';
 
 class MyAddressItems extends StatefulWidget {
   const MyAddressItems({super.key});

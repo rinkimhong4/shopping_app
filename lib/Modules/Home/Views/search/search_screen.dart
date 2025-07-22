@@ -4,10 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/Modules/Home/controller/search_controller.dart';
 import 'package:shopping_app/Modules/Home/models/product_model_api.dart';
+import 'package:shopping_app/Modules/items/brand_screen.dart';
 import 'package:shopping_app/Modules/items/home/items_screen_api.dart';
 import 'package:shopping_app/configs/Route/app_route.dart';
 import 'package:shopping_app/configs/Theme/app_theme.dart';
 import 'package:shopping_app/widgets/button_navigation_bar.dart';
+import 'package:shopping_app/widgets/chip_builder_widget.dart';
+import 'package:shopping_app/widgets/slider_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -167,8 +170,111 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: Theme.of(context).iconTheme.color,
                           size: 24,
                         ),
+                        // ==================
                         onPressed: () {
-                          // Filter action
+                          Get.bottomSheet(
+                            backgroundColor: Theme.of(context).cardColor,
+                            persistent: true,
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              width: double.infinity,
+                              padding: EdgeInsets.only(
+                                top: 20,
+                                left: 20,
+                                right: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 10,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () => Get.back(),
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.grey.withValues(
+                                                  alpha: 0.3,
+                                                ),
+                                              ),
+                                              child: Icon(
+                                                Icons.close,
+                                                size: 24,
+                                                color:
+                                                    Theme.of(
+                                                      context,
+                                                    ).iconTheme.color,
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () => Get.back(),
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.grey.withValues(
+                                                  alpha: 0.3,
+                                                ),
+                                              ),
+                                              child: Icon(
+                                                Icons.check,
+                                                size: 24,
+                                                color:
+                                                    Theme.of(
+                                                      context,
+                                                    ).iconTheme.color,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        'Category',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Divider(),
+                                      SliderDiscountWidget(),
+                                      SizedBox(height: 4),
+                                      SliderPriceRangeWidget(),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Brands',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      CustomChipBuilderWidget(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -320,7 +426,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // View all action
+                    Get.to(() => BrandScreen());
                   },
                   child: Text(
                     'View all',
@@ -341,34 +447,41 @@ class _SearchScreenState extends State<SearchScreen> {
                 featuredBrands.length,
                 (index) => Padding(
                   padding: const EdgeInsets.only(right: 20),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(14),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        () => BrandDetailsPage(
+                          brand: '${featuredBrands[index]['name']}',
+                          logo: '${featuredBrands[index]['logo']}',
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(14)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              featuredBrands[index]['logo'],
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            featuredBrands[index]['logo'],
-                            fit: BoxFit.contain,
-                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          featuredBrands[index]['name'],
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        featuredBrands[index]['name'],
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
