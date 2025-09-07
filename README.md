@@ -1,5 +1,9 @@
 # Shopping App
 
+# User: kim@gmail.com
+
+# Pwd: Hong@@11
+
 A comprehensive Flutter-based shopping application offering a seamless e-commerce experience with modern features and multi-platform support.
 
 ## Features
