@@ -1,6 +1,6 @@
 # Shopping App
 
-# User: kim@gmail.com
+# User: rinkimhong@gmail.com
 
 # Pwd: Hong@@11
 
