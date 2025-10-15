@@ -72,13 +72,13 @@ class EndGesture {
 /// Represents a gesture used explicitly to open a [Slidable].
 class OpeningGesture extends EndGesture {
   /// Creates an [OpeningGesture].
-  const OpeningGesture(double velocity) : super(velocity);
+  const OpeningGesture(super.velocity);
 }
 
 /// Represents a gesture used explicitly to close a [Slidable].
 class ClosingGesture extends EndGesture {
   /// Creates a [ClosingGesture].
-  const ClosingGesture(double velocity) : super(velocity);
+  const ClosingGesture(super.velocity);
 }
 
 /// Represents an end gesture without velocity.
@@ -360,7 +360,7 @@ class SlidableController {
 }
 
 class _ValueNotifier<T> extends ValueNotifier<T> {
-  _ValueNotifier(T value) : super(value);
+  _ValueNotifier(super.value);
 
   bool get _hasListeners => hasListeners;
 }

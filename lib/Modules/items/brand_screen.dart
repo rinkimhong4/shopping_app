@@ -60,7 +60,7 @@ class BrandScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            print('Tapped on ${allBrands[index]['name']}');
+            // print('Tapped on ${allBrands[index]['name']}');
             Navigator.push(
               context,
               MaterialPageRoute(
